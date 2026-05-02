@@ -1,0 +1,8 @@
+{
+  "name": "janaseva-root",
+  "version": "1.0.0",
+  "scripts": {
+    "install": "cd Janaseva/backend && npm install",
+    "start": "cd Janaseva/backend && node server.js"
+  }
+}
