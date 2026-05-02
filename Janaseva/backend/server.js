@@ -36,8 +36,8 @@ app.use(helmet({
 app.use(cors({
   origin: (origin, cb) => {
     const allowed = (process.env.FRONTEND_URL || 'http://localhost:3000').split(',').map(s => s.trim());
-    // Allow requests with no origin (mobile apps, Postman, curl)
-    if (!origin || allowed.includes(origin) || process.env.NODE_ENV === 'development') {
+    // Allow requests with no origin, localhost, allowed list, or railway domains
+    if (!origin || allowed.includes(origin) || origin.includes('railway.app') || process.env.NODE_ENV === 'development') {
       return cb(null, true);
     }
     cb(new Error(`CORS: origin ${origin} not allowed`));
