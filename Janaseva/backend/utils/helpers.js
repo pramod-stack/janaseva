@@ -61,7 +61,7 @@ function calculateFees(serviceType) {
 
 // ─── JWT Helpers ─────────────────────────────────────
 function generateTokens(userId) {
-  const accessToken = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+  const accessToken = jwt.sign({ id: userId }, process.env.JWT_SECRET || 'sevaone_fallback_secret_key', {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   });
   const refreshToken = uuidv4();

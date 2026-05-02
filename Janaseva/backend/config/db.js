@@ -6,7 +6,7 @@ let db;
 
 function getDb() {
   if (!db) {
-    db = new Database(path.resolve(process.env.DB_PATH || './janaseva.db'));
+    db = new Database(path.resolve(process.env.DB_PATH || './sevaone.db'));
     db.pragma('journal_mode = WAL');
     db.pragma('foreign_keys = ON');
     db.pragma('busy_timeout = 5000');
