@@ -30,6 +30,7 @@ const PORT = process.env.PORT || 5000;
 // ─────────────────────────────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow file serving
+  contentSecurityPolicy: false, // allow tailwind, fonts, and external videos
 }));
 
 app.use(cors({
