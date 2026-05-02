@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jana Seva Online Service Center | Government Services</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Geist:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#1E3A8A',
+                            orange: '#F97316',
+                            gray: '#F9FAFB',
+                            dark: '#0F172A'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'glow': '0 0 20px rgba(249, 115, 22, 0.4)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(30, 58, 138, 0.05) 0%, rgba(255,255,255,0) 70%);
+            z-index: 0;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+            border-color: #3B82F6;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="font-sans text-brand-dark antialiased bg-white overflow-x-hidden">
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/91XXXXXXXXXX" target="_blank" class="fixed bottom-6 right-6 z-50 bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg hover:bg-green-600 transition-transform hover:scale-110 hover:shadow-glow animate-bounce" style="animation-duration: 2s;">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full z-50 top-0 transition-all duration-300 bg-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-brand-blue to-blue-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md">
+                        JS
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-xl leading-none text-brand-blue tracking-tight">Jana Seva</h1>
+                        <p class="text-xs text-gray-500 font-medium tracking-wide uppercase mt-1">Online Service Center</p>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#services" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Services</a>
+                    <a href="#certificates" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Certificates</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">How it works</a>
+                    <a href="#testimonials" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">Reviews</a>
+                    <a href="tel:XXXXXXXXXX" class="bg-brand-orange text-white px-6 py-2.5 rounded-full font-semibold hover:bg-orange-600 transition-all shadow-md hover:shadow-lg flex items-center gap-2">
+                        <i class="fas fa-phone-alt text-sm"></i> Call Now
+                    </a>
+                    <a href="dashboard.html" class="text-brand-blue border border-brand-blue px-5 py-2 rounded-full font-semibold hover:bg-blue-50 transition-colors">
+                        Login
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center gap-4">
+                    <a href="tel:XXXXXXXXXX" class="text-brand-orange text-xl"><i class="fas fa-phone-alt"></i></a>
+                    <button class="text-gray-600 hover:text-brand-blue focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SECTION 1: HERO -->
+    <section class="relative w-full min-h-screen overflow-hidden flex flex-col items-center">
+        <!-- Background Video -->
+        <div class="absolute inset-0 z-0">
+            <video autoplay muted loop playsinline class="w-full h-full object-cover [transform:scaleY(-1)]">
+                <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260302_085640_276ea93b-d7da-4418-a09b-2aa5b490e838.mp4" type="video/mp4" />
+            </video>
+            <!-- Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-b from-[rgba(255,255,255,0)] from-[26.416%] to-white to-[66.943%]"></div>
+        </div>
+
+        <!-- Hero Content Container -->
+        <div class="relative z-10 w-full max-w-[1200px] px-4 pt-[290px] flex flex-col items-center text-center">
+            <div class="flex flex-col items-center gap-6 w-full">
+                <!-- Government Authorized Badge -->
+                <div 
+                    data-aos="fade-up"
+                    data-aos-duration="800"
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-brand-blue font-semibold text-xs sm:text-sm"
+                >
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    Government Authorized Center
+                </div>
+
+                <!-- Heading -->
+                <h1 
+                    data-aos="fade-up"
+                    data-aos-duration="800"
+                    data-aos-delay="100"
+                    class="text-brand-dark font-medium tracking-[-0.04em] text-5xl md:text-[80px] leading-[1.1] max-w-4xl"
+                    style="font-family: 'Geist', sans-serif;"
+                >
+                    All Government Services in <span class="italic font-normal text-brand-blue" style="font-family: 'Instrument Serif', serif;">One Place</span>
+                </h1>
+
+                <!-- Description -->
+                <div 
+                    data-aos="fade-up"
+                    data-aos-duration="800"
+                    data-aos-delay="200"
+                    class="flex flex-col items-center gap-2"
+                >
+                    <h2 class="text-xl sm:text-2xl text-gray-700 font-medium" style="font-family: 'Geist', sans-serif;">
+                        Fast Service • Trusted Service • Affordable Pricing
+                    </h2>
+                    <p class="text-lg sm:text-xl text-brand-orange font-semibold Kannada-font">
+                        ನಿಮ್ಮ ಎಲ್ಲಾ ಸರ್ಕಾರಿ ಸೇವೆಗಳಿಗಾಗಿ ಒಂದೇ ಸ್ಥಳ
+                    </p>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div 
+                    data-aos="fade-up"
+                    data-aos-duration="800"
+                    data-aos-delay="300"
+                    class="mt-4 flex flex-wrap justify-center items-center gap-4"
+                >
+                    <a href="#services" class="bg-brand-blue text-white px-8 py-3.5 rounded-full font-semibold text-lg hover:bg-blue-800 transition-all shadow-md hover:shadow-xl flex items-center gap-2">
+                        Apply Now <i class="fas fa-arrow-right text-sm"></i>
+                    </a>
+                    <a href="tel:XXXXXXXXXX" class="bg-white text-brand-dark border border-gray-200 px-8 py-3.5 rounded-full font-semibold text-lg hover:border-brand-orange hover:text-brand-orange transition-all shadow-sm flex items-center gap-2">
+                        <i class="fas fa-phone-alt"></i> Call Now
+                    </a>
+                </div>
+
+                <!-- Trust Badges -->
+                <div 
+                    data-aos="fade-up"
+                    data-aos-duration="800"
+                    data-aos-delay="400"
+                    class="mt-4 flex flex-wrap justify-center items-center gap-x-6 gap-y-3 text-sm font-medium text-gray-600"
+                >
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center"><i class="fas fa-check text-xs"></i></div>
+                        1000+ Services Completed
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center"><i class="fas fa-check text-xs"></i></div>
+                        Quick Processing
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center"><i class="fas fa-check text-xs"></i></div>
+                        Verified Center
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: SERVICES CATEGORY -->
+    <section id="services" class="py-20 bg-brand-gray relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="text-brand-orange font-bold tracking-wider uppercase text-sm">Our Services</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mt-2 mb-4">Comprehensive Government Services</h2>
+                <p class="text-gray-600 text-lg">We help you navigate complex paperwork with ease. Get your documents processed quickly and accurately.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Card 1 -->
+                <div class="bg-white rounded-2xl p-8 border border-gray-100 card-hover relative overflow-hidden group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                    <div class="w-14 h-14 bg-brand-blue text-white rounded-xl flex items-center justify-center text-2xl mb-6 shadow-md">
+                        <i class="fas fa-hands-holding-child"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-dark mb-4">Government Schemes</h3>
+                    <ul class="space-y-3 text-gray-600 font-medium mb-8">
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Yashasvini Health Card</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Old Age Pension</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Widow Pension</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Disability Pension</li>
+                    </ul>
+                    <a href="tel:XXXXXXXXXX" class="inline-block font-semibold text-brand-blue hover:text-brand-orange transition-colors">Apply Now <i class="fas fa-arrow-right ml-1"></i></a>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white rounded-2xl p-8 border border-gray-100 card-hover relative overflow-hidden group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                    <div class="w-14 h-14 bg-brand-orange text-white rounded-xl flex items-center justify-center text-2xl mb-6 shadow-md">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-dark mb-4">Personal Documents</h3>
+                    <ul class="space-y-3 text-gray-600 font-medium mb-8">
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Aadhaar Card</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> PAN Card</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Passport</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Voter ID</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Driving License</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Ration Card</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Senior Citizen Card</li>
+                    </ul>
+                    <a href="tel:XXXXXXXXXX" class="inline-block font-semibold text-brand-orange hover:text-brand-blue transition-colors">Apply Now <i class="fas fa-arrow-right ml-1"></i></a>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white rounded-2xl p-8 border border-gray-100 card-hover relative overflow-hidden group md:col-span-2 lg:col-span-1" data-aos="fade-up" data-aos-delay="300">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-bl-full -z-10 transition-transform group-hover:scale-110"></div>
+                    <div class="w-14 h-14 bg-green-600 text-white rounded-xl flex items-center justify-center text-2xl mb-6 shadow-md">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-brand-dark mb-4">Registrations & Licenses</h3>
+                    <ul class="space-y-3 text-gray-600 font-medium mb-8">
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> GST Registration</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Company Registration</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Trade License</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Shop & Establishment</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> Food License</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-check-circle text-green-500 mt-1"></i> ESI / PF / PT</li>
+                    </ul>
+                    <a href="tel:XXXXXXXXXX" class="inline-block font-semibold text-green-600 hover:text-brand-blue transition-colors">Apply Now <i class="fas fa-arrow-right ml-1"></i></a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: CERTIFICATES -->
+    <section id="certificates" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6" data-aos="fade-up">
+                <div class="max-w-2xl">
+                    <span class="text-brand-orange font-bold tracking-wider uppercase text-sm">Essential Documents</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mt-2">Certificates & Approvals</h2>
+                </div>
+                <a href="tel:XXXXXXXXXX" class="hidden md:inline-flex bg-brand-gray text-brand-dark px-6 py-2.5 rounded-full font-semibold hover:bg-gray-200 transition-colors items-center gap-2">
+                    Enquire Now <i class="fas fa-arrow-right text-sm"></i>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
+                <!-- Cert 1 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="50">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">Birth Certificate</h4>
+                </div>
+                <!-- Cert 2 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-cross"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">Death Certificate</h4>
+                </div>
+                <!-- Cert 3 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="150">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">Family Tree</h4>
+                </div>
+                <!-- Cert 4 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">Caste & Income</h4>
+                </div>
+                <!-- Cert 5 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="250">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">e-Khata</h4>
+                </div>
+                <!-- Cert 6 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-hard-hat"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">Labour Card</h4>
+                </div>
+                <!-- Cert 7 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="350">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">Pollution Control</h4>
+                </div>
+                <!-- Cert 8 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">Clinical License</h4>
+                </div>
+                <!-- Cert 9 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="450">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">Drug License</h4>
+                </div>
+                <!-- Cert 10 -->
+                <div class="bg-brand-gray p-6 rounded-2xl text-center hover:bg-blue-50 transition-colors group cursor-pointer border border-transparent hover:border-blue-100" data-aos="zoom-in" data-aos-delay="500">
+                    <div class="w-12 h-12 mx-auto bg-white rounded-full flex items-center justify-center text-brand-blue text-xl shadow-sm mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-biohazard"></i>
+                    </div>
+                    <h4 class="font-semibold text-sm text-gray-800">Biomedical Waste</h4>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center md:hidden">
+                <a href="tel:XXXXXXXXXX" class="inline-flex bg-brand-gray text-brand-dark px-6 py-2.5 rounded-full font-semibold hover:bg-gray-200 transition-colors items-center gap-2">
+                    Enquire Now <i class="fas fa-arrow-right text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: WHY CHOOSE US -->
+    <section class="py-20 bg-brand-blue text-white relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 32px 32px;"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4">Why People Trust Us</h2>
+                <p class="text-blue-200 text-lg">We provide transparent, quick, and reliable services to help you get your work done without the hassle.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                <!-- Feature 1 -->
+                <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-20 h-20 mx-auto bg-white/10 rounded-2xl flex items-center justify-center text-3xl text-brand-orange mb-5 backdrop-blur-sm border border-white/20 shadow-lg">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Fast Processing</h3>
+                    <p class="text-blue-200 text-sm">Minimal waiting time. We expedite your applications.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-20 h-20 mx-auto bg-white/10 rounded-2xl flex items-center justify-center text-3xl text-green-400 mb-5 backdrop-blur-sm border border-white/20 shadow-lg">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Affordable Charges</h3>
+                    <p class="text-blue-200 text-sm">Transparent pricing with no hidden costs.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-20 h-20 mx-auto bg-white/10 rounded-2xl flex items-center justify-center text-3xl text-blue-300 mb-5 backdrop-blur-sm border border-white/20 shadow-lg">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Trusted Service</h3>
+                    <p class="text-blue-200 text-sm">Authorized and 100% genuine processing.</p>
+                </div>
+                <!-- Feature 4 -->
+                <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-20 h-20 mx-auto bg-white/10 rounded-2xl flex items-center justify-center text-3xl text-pink-400 mb-5 backdrop-blur-sm border border-white/20 shadow-lg">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Customer Support</h3>
+                    <p class="text-blue-200 text-sm">Always available on Call and WhatsApp.</p>
+                </div>
+                <!-- Feature 5 -->
+                <div class="text-center" data-aos="fade-up" data-aos-delay="500">
+                    <div class="w-20 h-20 mx-auto bg-white/10 rounded-2xl flex items-center justify-center text-3xl text-yellow-400 mb-5 backdrop-blur-sm border border-white/20 shadow-lg">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Local Expert</h3>
+                    <p class="text-blue-200 text-sm">Familiar with local rules and documentation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: HOW IT WORKS -->
+    <section id="how-it-works" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="text-brand-orange font-bold tracking-wider uppercase text-sm">Simple Process</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mt-2">How It Works</h2>
+            </div>
+
+            <div class="relative">
+                <!-- Connecting Line -->
+                <div class="hidden md:block absolute top-[48px] left-[16%] right-[16%] h-1 bg-blue-100 -translate-y-1/2"></div>
+                
+                <div class="grid md:grid-cols-3 gap-10">
+                    <!-- Step 1 -->
+                    <div class="relative text-center" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-24 h-24 mx-auto bg-white border-4 border-blue-100 rounded-full flex items-center justify-center text-3xl text-brand-blue shadow-lg relative z-10 mb-6 font-bold">
+                            1
+                        </div>
+                        <h3 class="text-xl font-bold text-brand-dark mb-3">Choose Service</h3>
+                        <p class="text-gray-600">Tell us what you need or visit our center. We'll explain the exact requirements.</p>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="relative text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-24 h-24 mx-auto bg-brand-blue border-4 border-brand-blue text-white rounded-full flex items-center justify-center text-3xl shadow-lg shadow-blue-500/30 relative z-10 mb-6 font-bold">
+                            2
+                        </div>
+                        <h3 class="text-xl font-bold text-brand-dark mb-3">Submit Documents</h3>
+                        <p class="text-gray-600">Provide the required basic documents via WhatsApp or in person.</p>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="relative text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-24 h-24 mx-auto bg-brand-orange border-4 border-brand-orange text-white rounded-full flex items-center justify-center text-3xl shadow-lg shadow-orange-500/30 relative z-10 mb-6 font-bold">
+                            3
+                        </div>
+                        <h3 class="text-xl font-bold text-brand-dark mb-3">Get Your Certificate</h3>
+                        <p class="text-gray-600">We process it immediately and deliver your approved certificate directly to you.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: TESTIMONIALS -->
+    <section id="testimonials" class="py-20 bg-brand-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <span class="text-brand-orange font-bold tracking-wider uppercase text-sm">Customer Reviews</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-dark mt-2">What Our Clients Say</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Review 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-soft relative" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fas fa-quote-left text-4xl text-gray-200 absolute top-6 right-6"></i>
+                    <div class="flex text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-700 italic mb-6">"Very fast service, got my Aadhaar update done in one day. The staff is very polite and helpful. Highly recommend for any government work."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-brand-blue font-bold text-lg">M</div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark">Manjunath S.</h4>
+                            <p class="text-sm text-gray-500">Local Resident</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-soft relative" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-quote-left text-4xl text-gray-200 absolute top-6 right-6"></i>
+                    <div class="flex text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-700 italic mb-6">"Affordable and trustworthy. I applied for my PAN card here and received it without any hassle. They explain everything clearly."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-brand-orange font-bold text-lg">K</div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark">Kavya R.</h4>
+                            <p class="text-sm text-gray-500">Business Owner</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-soft relative" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-quote-left text-4xl text-gray-200 absolute top-6 right-6"></i>
+                    <div class="flex text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-700 italic mb-6">"Best service center in my area. They helped me with my Shop License. Did not have to run to government offices. Saved me a lot of time."</p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-lg">P</div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark">Prakash V.</h4>
+                            <p class="text-sm text-gray-500">Shopkeeper</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: CALL TO ACTION -->
+    <section class="py-20 relative">
+        <div class="absolute inset-0 bg-brand-blue"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-800"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center" data-aos="zoom-in">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Need Help with Government Services?</h2>
+            <p class="text-blue-100 text-lg md:text-xl mb-10 max-w-2xl mx-auto">Skip the long queues. Call us today and let our experts handle your applications fast and securely.</p>
+            
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="tel:XXXXXXXXXX" class="w-full sm:w-auto bg-white text-brand-blue px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg flex items-center justify-center gap-2">
+                    <i class="fas fa-phone-alt"></i> Call Now: XXXXXXXXXX
+                </a>
+                <a href="https://wa.me/91XXXXXXXXXX" target="_blank" class="w-full sm:w-auto bg-green-500 text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-green-600 transition-colors shadow-lg flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp text-xl"></i> WhatsApp Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: FOOTER -->
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8 border-t-4 border-brand-orange">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                
+                <!-- Brand Info -->
+                <div class="lg:col-span-1">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-brand-orange rounded-xl flex items-center justify-center text-white font-bold text-xl">
+                            JS
+                        </div>
+                        <h2 class="font-bold text-xl text-white tracking-tight">Jana Seva</h2>
+                    </div>
+                    <p class="text-gray-400 mb-6 text-sm">Your trusted local center for all government services, applications, and certificates.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-blue hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-blue hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-white font-bold mb-6 text-lg">Quick Links</h3>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="#services" class="hover:text-brand-orange transition-colors">All Services</a></li>
+                        <li><a href="#certificates" class="hover:text-brand-orange transition-colors">Certificates</a></li>
+                        <li><a href="#how-it-works" class="hover:text-brand-orange transition-colors">How it Works</a></li>
+                        <li><a href="dashboard.html" class="hover:text-brand-orange transition-colors">Portal Login</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-white font-bold mb-6 text-lg">Contact Us</h3>
+                    <ul class="space-y-4 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-brand-orange mt-1"></i>
+                            <span>123 Main Road, Next to Bus Stand,<br>Bengaluru, Karnataka 560001</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone-alt text-brand-orange"></i>
+                            <a href="tel:XXXXXXXXXX" class="hover:text-white transition-colors">+91 XXXXXXXXXX</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fab fa-whatsapp text-brand-orange text-lg"></i>
+                            <a href="https://wa.me/91XXXXXXXXXX" class="hover:text-white transition-colors">+91 XXXXXXXXXX</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-brand-orange"></i>
+                            <a href="mailto:info@janaseva.in" class="hover:text-white transition-colors">info@janaseva.in</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Map -->
+                <div>
+                    <h3 class="text-white font-bold mb-6 text-lg">Our Location</h3>
+                    <div class="h-40 bg-gray-800 rounded-xl overflow-hidden relative group">
+                        <!-- Placeholder Map -->
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-500 bg-gray-800 border border-gray-700">
+                            <i class="fas fa-map-marked-alt text-3xl mb-2"></i>
+                            <span class="text-xs font-medium">Google Maps Embed Here</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+                <p>&copy; 2026 Jana Seva Online Service Center. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-gray-300">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-300">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize Animations
+        AOS.init({
+            once: true,
+            offset: 50,
+            duration: 800,
+            easing: 'ease-out-cubic',
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('glass-nav');
+                navbar.classList.remove('bg-transparent');
+            } else {
+                navbar.classList.remove('glass-nav');
+                navbar.classList.add('bg-transparent');
+            }
+        });
+        
+        // Mobile Menu Toggle
+        document.querySelector('.fa-bars').parentElement.addEventListener('click', function() {
+            const menu = document.querySelector('.hidden.md\\:flex');
+            if(menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('flex', 'flex-col', 'absolute', 'top-20', 'left-0', 'w-full', 'bg-white', 'p-6', 'shadow-xl', 'border-t', 'border-gray-100');
+                menu.querySelectorAll('a').forEach(a => {
+                    a.classList.add('py-2', 'w-full');
+                    a.classList.remove('px-6', 'rounded-full');
+                });
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex', 'flex-col', 'absolute', 'top-20', 'left-0', 'w-full', 'bg-white', 'p-6', 'shadow-xl', 'border-t', 'border-gray-100');
+            }
+        });
+    </script>
+</body>
+</html>

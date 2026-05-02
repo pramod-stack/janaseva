@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>JanaSeva Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --brand:#c0392b;--brand2:#e67e22;--gold:#f39c12;
+  --sidebar:#0f0825;--sidebar-border:rgba(255,255,255,.06);
+  --page:#f0f2f7;--card:#fff;--r:12px;
+  --green:#27ae60;--blue:#2980b9;--teal:#00b894;--purple:#8e44ad;--pink:#e91e63;--red:#e74c3c;
+  --tx:#1a1a2e;--muted:#6b7280;--border:#e5e9f0;
+  --sh:0 2px 16px rgba(0,0,0,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--page);color:var(--tx);display:flex;height:100vh;overflow:hidden}
+
+/* ── AUTH ── */
+.auth-wrap{position:fixed;inset:0;background:linear-gradient(135deg,#0f0825,#1a0a2e,#0f0825);display:flex;align-items:center;justify-content:center;z-index:999}
+.auth-box{background:#fff;border-radius:16px;padding:36px;width:400px;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.auth-logo{text-align:center;margin-bottom:24px}
+.auth-logo .ai{width:52px;height:52px;background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;color:#fff;font-size:20px;margin-bottom:10px}
+.auth-logo h1{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700}
+.auth-logo p{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+
+/* ── SIDEBAR ── */
+.sidebar{width:230px;min-width:230px;background:var(--sidebar);display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.08) transparent}
+.sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08)}
+.sb-logo{padding:16px;border-bottom:1px solid var(--sidebar-border);display:flex;align-items:center;gap:10px}
+.sb-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;color:#fff;font-size:16px;flex-shrink:0}
+.sb-logo-text{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:#fff;line-height:1.1}
+.sb-logo-sub{font-size:9px;color:#888;letter-spacing:1px;text-transform:uppercase}
+.sb-sec{padding:10px 14px 3px;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;font-weight:600}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 14px;margin:1px 8px;border-radius:9px;cursor:pointer;color:#b0b0c0;font-size:13px;font-weight:500;transition:.15s;position:relative}
+.sb-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-item.active{background:var(--brand);color:#fff}
+.sb-item.active::before{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:60%;background:#fff;border-radius:0 2px 2px 0}
+.sb-icon{font-size:15px;width:20px;text-align:center}
+.sb-badge{margin-left:auto;background:rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;height:52px;gap:12px;flex-shrink:0}
+.tb-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;flex:1}
+.tb-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:.15s;font-family:'DM Sans',sans-serif}
+.tb-btn.primary{background:var(--brand);color:#fff}.tb-btn.primary:hover{background:#a93226}
+.tb-btn.secondary{background:#f4f5f7;color:var(--tx);border:1px solid var(--border)}
+.tb-user{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;background:linear-gradient(135deg,#0f0825,#1a0a2e);border-radius:9px;cursor:pointer}
+.tb-av{width:26px;height:26px;border-radius:6px;background:var(--brand);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.tb-name{font-size:12px;font-weight:600;color:#fff}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;padding:18px 20px}
+.content::-webkit-scrollbar{width:5px}.content::-webkit-scrollbar-thumb{background:#d0d4e0;border-radius:3px}
+.page{display:none}.page.active{display:block}
+.page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px}
+.page-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700}
+.page-sub{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh)}
+.stat-card .sv{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;line-height:1}
+.stat-card .sl{font-size:11px;color:var(--muted);font-weight:500;margin-bottom:4px}
+.stat-card .si{font-size:11px;margin-top:6px;color:var(--green)}
+
+/* ── TABLE ── */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.tbl-toolbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.tbl-search{padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;transition:.15s;min-width:220px}
+.tbl-search:focus{border-color:var(--blue)}
+.filter-sel{padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;color:var(--tx);outline:none;background:#fff}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;padding:10px 14px;text-align:left;border-bottom:2px solid var(--border);background:#fafbfd;white-space:nowrap}
+td{padding:10px 14px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfd}
+.pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill.active,.pill.yes{background:#e8f8ef;color:var(--green)}
+.pill.inactive,.pill.no{background:#fef0ee;color:var(--red)}
+.pill.free{background:#e8f2fb;color:var(--blue)}
+.pill.paid{background:#fef5e7;color:var(--brand2)}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:.15s;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{filter:brightness(.92)}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.btn-orange{background:var(--brand2);color:#fff}
+.btn-ghost{background:#f4f5f7;color:var(--tx);border:1px solid var(--border)}
+.btn-danger{background:#fef0ee;color:var(--red);border:1px solid #f5c6c6}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn:disabled{opacity:.55;cursor:wait}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:720px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:min .25s ease;margin:auto}
+@keyframes min{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-hdr{padding:20px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700}
+.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1}
+.modal-body{padding:20px 24px}
+.modal-foot{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+
+/* ── FORMS ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid.single{grid-template-columns:1fr}
+.form-grid.triple{grid-template-columns:1fr 1fr 1fr}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:12px;font-weight:600;color:var(--tx)}
+.fg .req{color:var(--brand)}
+.fg input,.fg select,.fg textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--tx);outline:none;transition:.15s;background:#fff;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(41,128,185,.1)}
+.fg textarea{resize:vertical;min-height:72px}
+.fg .hint{font-size:11px;color:var(--muted)}
+.fg .toggle-row{display:flex;align-items:center;gap:10px}
+.toggle{width:38px;height:20px;border-radius:10px;background:#ddd;position:relative;cursor:pointer;transition:.2s;border:none}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:.2s}
+.toggle.on::after{left:21px}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:16px}
+.tab-btn{padding:8px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);background:transparent;border:none;position:relative;bottom:-2px}
+.tab-btn.active{color:var(--brand);border-bottom:2px solid var(--brand)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* ── SECTION BADGE ── */
+.sec-label{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;background:#f0f2f7;color:var(--muted)}
+
+/* ── DRAG HANDLE ── */
+.drag-handle{cursor:grab;color:#ccc;font-size:14px;padding:0 4px}
+.drag-handle:active{cursor:grabbing}
+
+/* ── COLOR PICKER ── */
+.color-opts{display:flex;gap:8px;flex-wrap:wrap}
+.color-opt{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:.15s}
+.color-opt.selected{border-color:var(--tx);transform:scale(1.1)}
+
+/* ── ICON PICKER ── */
+.icon-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;max-height:180px;overflow-y:auto;padding:8px;background:#f8f9fb;border-radius:8px;border:1px solid var(--border)}
+.icon-opt{width:36px;height:36px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border:2px solid transparent;transition:.15s}
+.icon-opt:hover{background:#fff;border-color:var(--border)}
+.icon-opt.selected{background:#fff;border-color:var(--blue)}
+
+/* ── FEE DISPLAY ── */
+.fee-preview{background:linear-gradient(135deg,#f8f9fb,#eef2f8);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:8px}
+.fee-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
+.fee-row.total{border-top:1px dashed var(--border);margin-top:6px;padding-top:8px;font-weight:700}
+
+/* ── SETTINGS ── */
+.settings-group{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;box-shadow:var(--sh)}
+.settings-group-title{font-size:14px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;color:var(--tx)}
+.setting-row{display:grid;grid-template-columns:2fr 2fr 1fr;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-key{font-size:12px;color:var(--muted);font-family:monospace}
+.setting-label{font-size:13px;font-weight:600}
+.setting-hint{font-size:11px;color:var(--muted)}
+.setting-input{padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;outline:none;width:100%;transition:.15s}
+.setting-input:focus{border-color:var(--blue)}
+
+/* ── FIELD BUILDER ── */
+.field-item{background:#f8f9fb;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.field-info{flex:1}
+.field-name-tag{font-family:monospace;font-size:11px;background:#e8f2fb;color:var(--blue);padding:2px 7px;border-radius:4px;margin-left:6px}
+.field-type-tag{font-size:10px;background:#f4f5f7;color:var(--muted);padding:2px 7px;border-radius:4px}
+.field-section-tag{font-size:10px;color:var(--purple);font-weight:600}
+
+/* ── DOC ITEM ── */
+.doc-item{background:#f8f9fb;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.doc-icon{font-size:22px;width:36px;text-align:center}
+.doc-info{flex:1}
+.doc-types{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.doc-type-tag{font-size:10px;background:#e8f8ef;color:var(--green);padding:2px 6px;border-radius:4px;font-weight:600}
+
+/* ── TOAST ── */
+.toast{position:fixed;top:18px;right:18px;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;color:#fff;z-index:9999;transform:translateX(140%);transition:.3s;max-width:360px}
+.toast.show{transform:translateX(0)}
+.toast.success{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+.toast.error{background:linear-gradient(135deg,#e74c3c,#c0392b)}
+.toast.info{background:linear-gradient(135deg,#2980b9,#3498db)}
+
+/* ── LOADER ── */
+.spinner{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.page-loader{display:flex;align-items:center;justify-content:center;padding:60px;gap:12px;color:var(--muted);font-size:14px}
+.page-loader::before{content:'';width:22px;height:22px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty .ei{font-size:44px;margin-bottom:12px;display:block}
+.empty h3{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div class="auth-wrap" id="authWrap">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="ai">S1</div>
+      <h1>JanaSeva Admin</h1>
+      <p>Admin Control Panel</p>
+    </div>
+    <div class="fg" style="margin-bottom:14px"><label>Email</label><input id="a-email" type="email" placeholder="admin@janaseva.in" value="admin@janaseva.in"></div>
+    <div class="fg" style="margin-bottom:20px"><label>Password</label><input id="a-pass" type="password" placeholder="Admin password" value="Admin@1234"></div>
+    <button class="btn btn-primary" style="width:100%;padding:11px" id="loginBtn" onclick="doLogin()">Login to Admin Panel</button>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--muted)">Demo: admin@janaseva.in / Admin@1234</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebarEl" style="display:none">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">S1</div>
+    <div><div class="sb-logo-text">JanaSeva <span style="color:#f39c12">Admin</span></div><div class="sb-logo-sub">Control Panel</div></div>
+  </div>
+  <div class="sb-item active" data-page="dashboard"><span class="sb-icon">📊</span> Dashboard</div>
+  <div class="sb-sec">Services Management</div>
+  <div class="sb-item" data-page="services"><span class="sb-icon">🛠️</span> Services <span class="sb-badge" id="sb-svc-count">0</span></div>
+  <div class="sb-item" data-page="categories"><span class="sb-icon">📂</span> Categories</div>
+  <div class="sb-item" data-page="form-builder"><span class="sb-icon">📝</span> Form Fields</div>
+  <div class="sb-item" data-page="documents"><span class="sb-icon">📎</span> Documents</div>
+  <div class="sb-sec">Operations</div>
+  <div class="sb-item" data-page="applications"><span class="sb-icon">📋</span> Applications <span class="sb-badge" id="sb-app-count">0</span></div>
+  <div class="sb-item" data-page="users"><span class="sb-icon">👥</span> Users</div>
+  <div class="sb-item" data-page="retailers"><span class="sb-icon">🏪</span> Retailers</div>
+  <div class="sb-item" data-page="wallet-mgmt"><span class="sb-icon">💰</span> Wallet & Fees</div>
+  <div class="sb-sec">Content</div>
+  <div class="sb-item" data-page="announcements"><span class="sb-icon">📢</span> Announcements</div>
+  <div class="sb-item" data-page="settings"><span class="sb-icon">⚙️</span> System Settings</div>
+  <div class="sb-item" data-page="audit"><span class="sb-icon">🔍</span> Audit Log</div>
+  <div class="sb-item" onclick="doLogout()" style="margin-bottom:14px;color:#e74c3c"><span class="sb-icon">🚪</span> Logout</div>
+</nav>
+
+<!-- MAIN -->
+<div class="main" id="mainEl" style="display:none">
+  <div class="topbar">
+    <div class="tb-title" id="topbarTitle">Dashboard</div>
+    <div id="topbarActions"></div>
+    <div class="tb-user">
+      <div class="tb-av" id="tbAv">A</div>
+      <div class="tb-name" id="tbName">Admin</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="page active" id="page-dashboard">
+      <div id="dashContent"><div class="page-loader"></div></div>
+    </div>
+
+    <!-- ── SERVICES ── -->
+    <div class="page" id="page-services">
+      <div class="page-hdr">
+        <div><div class="page-title">Services</div><div class="page-sub">Manage all government services, fees, and availability</div></div>
+        <button class="btn btn-primary" onclick="openServiceModal()">+ Add Service</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-toolbar">
+          <input class="tbl-search" id="svc-search" placeholder="🔍 Search services…" oninput="renderServicesTable()">
+          <select class="filter-sel" id="svc-cat-filter" onchange="renderServicesTable()"><option value="">All Categories</option></select>
+          <select class="filter-sel" id="svc-status-filter" onchange="renderServicesTable()">
+            <option value="">All Status</option><option value="1">Active</option><option value="0">Inactive</option>
+          </select>
+        </div>
+        <div id="servicesTableBody"></div>
+      </div>
+    </div>
+
+    <!-- ── CATEGORIES ── -->
+    <div class="page" id="page-categories">
+      <div class="page-hdr">
+        <div><div class="page-title">Service Categories</div><div class="page-sub">Organise services into categories shown on the portal</div></div>
+        <button class="btn btn-primary" onclick="openCategoryModal()">+ Add Category</button>
+      </div>
+      <div id="categoriesGrid"></div>
+    </div>
+
+    <!-- ── FORM BUILDER ── -->
+    <div class="page" id="page-form-builder">
+      <div class="page-hdr">
+        <div><div class="page-title">Form Field Builder</div><div class="page-sub">Configure input fields for each service application form</div></div>
+      </div>
+      <div class="form-grid" style="margin-bottom:14px">
+        <div class="fg"><label>Select Service</label><select id="fb-service-sel" onchange="loadFormFields()"><option value="">-- Choose service --</option></select></div>
+      </div>
+      <div id="formBuilderContent"><div class="empty"><span class="ei">📝</span><h3>Select a service above</h3><p>Choose a service to view and edit its form fields</p></div></div>
+    </div>
+
+    <!-- ── DOCUMENTS ── -->
+    <div class="page" id="page-documents">
+      <div class="page-hdr">
+        <div><div class="page-title">Document Requirements</div><div class="page-sub">Manage required documents per service</div></div>
+      </div>
+      <div class="form-grid" style="margin-bottom:14px">
+        <div class="fg"><label>Select Service</label><select id="doc-service-sel" onchange="loadDocuments()"><option value="">-- Choose service --</option></select></div>
+      </div>
+      <div id="documentsContent"><div class="empty"><span class="ei">📎</span><h3>Select a service above</h3><p>Choose a service to manage its document requirements</p></div></div>
+    </div>
+
+    <!-- ── APPLICATIONS ── -->
+    <div class="page" id="page-applications">
+      <div class="page-hdr">
+        <div><div class="page-title">Applications</div><div class="page-sub">Review and process all submitted applications</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-toolbar">
+          <input class="tbl-search" id="app-search" placeholder="🔍 Search by ref, name…" oninput="renderAppsTable()">
+          <select class="filter-sel" id="app-status-filter" onchange="renderAppsTable()">
+            <option value="">All Status</option>
+            <option>submitted</option><option>processing</option><option>under_review</option>
+            <option>approved</option><option>completed</option><option>rejected</option>
+          </select>
+          <select class="filter-sel" id="app-svc-filter" onchange="renderAppsTable()"><option value="">All Services</option></select>
+        </div>
+        <div id="appsTableBody"></div>
+      </div>
+    </div>
+
+    <!-- ── USERS ── -->
+    <div class="page" id="page-users">
+      <div class="page-hdr">
+        <div><div class="page-title">Users</div><div class="page-sub">Manage citizens, retailers, and officers</div></div>
+        <button class="btn btn-blue" onclick="openCreateOfficerModal()">+ Create Officer</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-toolbar">
+          <input class="tbl-search" id="user-search" placeholder="🔍 Search users…" oninput="renderUsersTable()">
+          <select class="filter-sel" id="user-role-filter" onchange="renderUsersTable()">
+            <option value="">All Roles</option><option>citizen</option><option>retailer</option><option>officer</option><option>distributor</option>
+          </select>
+          <select class="filter-sel" id="user-kyc-filter" onchange="renderUsersTable()">
+            <option value="">All KYC</option><option>pending</option><option>verified</option><option>rejected</option>
+          </select>
+        </div>
+        <div id="usersTableBody"></div>
+      </div>
+    </div>
+
+    <!-- ── RETAILERS ── -->
+    <div class="page" id="page-retailers">
+      <div class="page-hdr"><div><div class="page-title">Retailers & Agents</div><div class="page-sub">Manage retail network and commissions</div></div></div>
+      <div id="retailersContent"><div class="page-loader"></div></div>
+    </div>
+
+    <!-- ── WALLET MGMT ── -->
+    <div class="page" id="page-wallet-mgmt">
+      <div class="page-hdr"><div><div class="page-title">Wallet & Fee Management</div><div class="page-sub">Credit wallets and update service fees</div></div></div>
+      <div id="walletMgmtContent"><div class="page-loader"></div></div>
+    </div>
+
+    <!-- ── ANNOUNCEMENTS ── -->
+    <div class="page" id="page-announcements">
+      <div class="page-hdr">
+        <div><div class="page-title">Announcements</div><div class="page-sub">Manage portal banners and notification messages</div></div>
+        <button class="btn btn-primary" onclick="openAnnModal()">+ Add Announcement</button>
+      </div>
+      <div id="annContent"><div class="page-loader"></div></div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div class="page" id="page-settings">
+      <div class="page-hdr">
+        <div><div class="page-title">System Settings</div><div class="page-sub">Configure portal behaviour, fees, and integrations</div></div>
+        <button class="btn btn-primary" onclick="saveAllSettings()">💾 Save All Changes</button>
+      </div>
+      <div id="settingsContent"><div class="page-loader"></div></div>
+    </div>
+
+    <!-- ── AUDIT ── -->
+    <div class="page" id="page-audit">
+      <div class="page-hdr"><div><div class="page-title">Audit Log</div><div class="page-sub">Full activity trail of all admin actions</div></div></div>
+      <div id="auditContent"><div class="page-loader"></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── MODALS ── -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modalBox">
+    <div class="modal-hdr"><div class="modal-title" id="modalTitle">Modal</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+ 
+ // Demo data for offline mode 
+ const DEMO_SERVICES = [ 
+   {id:'demo-1',service_type:'pan_new',name:'New PAN Card Application',short_name:'New PAN',category_id:'cat-01',category_name:'Identity & Aadhaar',cat_icon:'🪪',icon:'🪙',color:'blue',govt_fee:107,platform_fee:15,gst_percent:18,total_fee:122.7,is_active:1,is_free:0,field_count:9,doc_count:4,total_applications:0,sort_order:1}, 
+   {id:'demo-2',service_type:'aadhaar_update',name:'Aadhaar Correction/Update',short_name:'Aadhaar Update',category_id:'cat-01',category_name:'Identity & Aadhaar',cat_icon:'🪪',icon:'🪪',color:'red',govt_fee:50,platform_fee:30,gst_percent:0,total_fee:80,is_active:1,is_free:0,field_count:6,doc_count:1,total_applications:0,sort_order:4}, 
+   {id:'demo-3',service_type:'arogya_health_card',name:'Arogya Health Card',short_name:'Arogya Card',category_id:'jcat-01',category_name:'Health',cat_icon:'🏥',icon:'🏥',color:'teal',govt_fee:50,platform_fee:115,gst_percent:0,total_fee:165,is_active:1,is_free:0,field_count:5,doc_count:2,total_applications:0,sort_order:1}, 
+   {id:'demo-4',service_type:'revenue_income_certificate',name:'Income Certificate',short_name:'Income Cert',category_id:'jcat-03',category_name:'Revenue Certificates',cat_icon:'📄',icon:'💰',color:'blue',govt_fee:35,platform_fee:115,gst_percent:0,total_fee:150,is_active:1,is_free:0,field_count:7,doc_count:5,total_applications:0,sort_order:1}, 
+   {id:'demo-5',service_type:'gst_new',name:'GST Registration',short_name:'GST Reg.',category_id:'cat-03',category_name:'Business & Tax',cat_icon:'🏢',icon:'📋',color:'orange',govt_fee:0,platform_fee:500,gst_percent:18,total_fee:590,is_active:1,is_free:0,field_count:13,doc_count:5,total_applications:0,sort_order:1}, 
+ ]; 
+ const DEMO_CATS = [ 
+   {id:'cat-01',name:'Identity & Aadhaar',icon:'🪪',color:'red',description:'Aadhaar, PAN, identity services',sort_order:1,is_active:1,service_count:4}, 
+   {id:'jcat-01',name:'Health',icon:'🏥',color:'teal',description:'Health card and medical services',sort_order:10,is_active:1,service_count:1}, 
+   {id:'jcat-03',name:'Revenue Certificates',icon:'📄',color:'blue',description:'Income, caste, and revenue certs',sort_order:12,is_active:1,service_count:13}, 
+   {id:'cat-03',name:'Business & Tax',icon:'🏢',color:'orange',description:'GST, MSME, business registrations',sort_order:3,is_active:1,service_count:4}, 
+ ]; 
+ const DEMO_USERS = [ 
+   {id:'u1',name:'Arjun N',email:'arjun@janaseva.in',mobile:'9876543210',role:'retailer',kyc_status:'verified',wallet_balance:164,is_active:1,app_count:9}, 
+   {id:'u2',name:'Ravi Kumar',email:'ravi@example.com',mobile:'9898989898',role:'citizen',kyc_status:'pending',wallet_balance:0,is_active:1,app_count:2}, 
+ ]; 
+ const DEMO_APPS_ADMIN = [ 
+   {id:'app1',ref_number:'PAN-123456-001',applicant_name:'Ravi Kumar',applicant_mobile:'9898989898',service_name:'New PAN Card Application',fees:122.70,payment_status:'paid',status:'processing',submitted_at:new Date().toISOString()}, 
+   {id:'app2',ref_number:'INC-234567-002',applicant_name:'Arjun N',applicant_mobile:'9876543210',service_name:'Income Certificate',fees:150,payment_status:'paid',status:'submitted',submitted_at:new Date().toISOString()}, 
+ ];
+const API = 'http://localhost:5000/api';
+let token = localStorage.getItem('sva_admin_token') || null;
+let adminUser = JSON.parse(localStorage.getItem('sva_admin_user') || 'null');
+
+// State
+let allServices = [], allCategories = [], allUsers = [], allApps = [], allSettings = {}, allAnnouncements = [];
+
+// ─── API HELPER ─────────────────────────────────────
+async function api(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (opts.body instanceof FormData) delete headers['Content-Type'];
+  else if (opts.body && typeof opts.body === 'object') opts.body = JSON.stringify(opts.body);
+  try {
+    const res = await fetch(`${API}${path}`, { method: opts.method || 'GET', headers, body: opts.body });
+    const data = await res.json();
+    if (res.status === 401) { doLogout(); return null; }
+    return { ok: res.ok, status: res.status, data };
+  } catch(e) {
+    return { ok: false, status: 0, data: { success: false, message: 'Server offline – using demo data', offline: true } };
+  }
+}
+
+// ─── AUTH ────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('a-email').value.trim();
+  const pass = document.getElementById('a-pass').value;
+  if (!email || !pass) { showToast('Enter email and password', 'error'); return; }
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Logging in…';
+  const res = await api('/auth/login', { method: 'POST', body: { email, password: pass } });
+  btn.disabled = false; btn.textContent = 'Login to Admin Panel';
+  if (res?.ok && res.data?.data?.role === 'admin') {
+    token = res.data.accessToken;
+    adminUser = res.data.data;
+    localStorage.setItem('sva_admin_token', token);
+    localStorage.setItem('sva_admin_user', JSON.stringify(adminUser));
+    initApp();
+  } else if (res?.data?.offline) {
+    adminUser = { id:'demo', name:'Admin', email, role:'admin' };
+    localStorage.setItem('sva_admin_user', JSON.stringify(adminUser));
+    showToast('Demo mode – backend offline', 'info');
+    initApp();
+  } else {
+    showToast(res?.data?.message || 'Login failed or not an admin', 'error');
+  }
+}
+function doLogout() {
+  token = null; adminUser = null;
+  localStorage.removeItem('sva_admin_token'); localStorage.removeItem('sva_admin_user');
+  document.getElementById('authWrap').style.display = 'flex';
+  document.getElementById('sidebarEl').style.display = 'none';
+  document.getElementById('mainEl').style.display = 'none';
+}
+function initApp() {
+  document.getElementById('authWrap').style.display = 'none';
+  document.getElementById('sidebarEl').style.display = 'flex';
+  document.getElementById('mainEl').style.display = 'flex';
+  document.getElementById('tbName').textContent = adminUser?.name || 'Admin';
+  document.getElementById('tbAv').textContent = (adminUser?.name || 'A')[0].toUpperCase();
+  document.querySelectorAll('.sb-item[data-page]').forEach(n => {
+    n.addEventListener('click', () => navigate(n.dataset.page));
+  });
+  navigate('dashboard');
+  loadAllData();
+}
+
+// ─── NAVIGATION ──────────────────────────────────────
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`page-${page}`)?.classList.add('active');
+  document.querySelectorAll('.sb-item[data-page]').forEach(n => n.classList.toggle('active', n.dataset.page === page));
+  const titles = { dashboard:'Dashboard', services:'Services', categories:'Categories', 'form-builder':'Form Field Builder',
+    documents:'Document Requirements', applications:'Applications', users:'Users', retailers:'Retailers & Agents',
+    'wallet-mgmt':'Wallet & Fee Management', announcements:'Announcements', settings:'System Settings', audit:'Audit Log' };
+  document.getElementById('topbarTitle').textContent = titles[page] || page;
+  document.getElementById('topbarActions').innerHTML = '';
+  const loaders = {
+    dashboard: loadDashboard, services: renderServicesTable, categories: loadCategories,
+    'form-builder': setupFormBuilder, documents: setupDocManager, applications: loadApplications,
+    users: loadUsers, retailers: loadRetailers, 'wallet-mgmt': loadWalletMgmt,
+    announcements: loadAnnouncements, settings: loadSettings, audit: loadAudit,
+  };
+  if (loaders[page]) loaders[page]();
+}
+
+// ─── LOAD ALL DATA ───────────────────────────────────
+async function loadAllData() {
+  const [svcRes, catRes] = await Promise.all([
+    api('/admin/services/list'),
+    api('/admin/services/categories'),
+  ]);
+  allServices = svcRes?.ok ? (svcRes.data.data || []) : DEMO_SERVICES;
+  allCategories = catRes?.ok ? (catRes.data.data || []) : DEMO_CATS;
+  document.getElementById('sb-svc-count').textContent = allServices.filter(s=>s.is_active).length;
+  populateCategoryFilters();
+  populateServiceDropdowns();
+}
+
+// ─── DASHBOARD ───────────────────────────────────────
+async function loadDashboard() {
+  const res = await api('/admin/dashboard');
+  const d = res?.ok ? res.data.data : DEMO_DASH;
+  document.getElementById('dashContent').innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="sl">Total Users</div><div class="sv">${d.users?.total||0}</div><div class="si">↑ ${d.users?.retailers||0} retailers</div></div>
+      <div class="stat-card"><div class="sl">Applications</div><div class="sv">${d.apps?.total||0}</div><div class="si">📋 ${d.apps?.pending||0} pending</div></div>
+      <div class="stat-card"><div class="sl">Approved Today</div><div class="sv" style="color:var(--green)">${d.apps?.approved||0}</div><div class="si">✅ ${d.apps?.today||0} submitted today</div></div>
+      <div class="stat-card"><div class="sl">Total Revenue</div><div class="sv" style="color:var(--brand)">₹${Number(d.revenue?.total||0).toLocaleString('en-IN')}</div><div class="si">This month: ₹${Number(d.revenue?.month||0).toLocaleString('en-IN')}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="tbl-wrap">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:13px">📊 Top Services by Volume</div>
+        <table><thead><tr><th>Service</th><th>Applications</th><th>Revenue</th></tr></thead>
+        <tbody>${(d.service_breakdown||[]).slice(0,8).map(s=>`<tr><td>${s.service_name}</td><td>${s.count}</td><td>₹${Number(s.revenue).toLocaleString('en-IN')}</td></tr>`).join('')}</tbody></table>
+      </div>
+      <div class="tbl-wrap">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:13px">🕐 Recent Applications</div>
+        <table><thead><tr><th>Ref</th><th>Service</th><th>Status</th></tr></thead>
+        <tbody>${(d.recent_applications||[]).slice(0,8).map(a=>`<tr><td style="font-family:monospace;font-size:11px">${a.ref_number}</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.service_name}</td><td><span class="pill ${a.status}">${a.status}</span></td></tr>`).join('')}</tbody></table>
+      </div>
+    </div>`;
+}
+
+// ─── SERVICES TABLE ───────────────────────────────────
+function renderServicesTable() {
+  const search = document.getElementById('svc-search')?.value.toLowerCase() || '';
+  const catFilter = document.getElementById('svc-cat-filter')?.value || '';
+  const statusFilter = document.getElementById('svc-status-filter')?.value || '';
+  let data = allServices;
+  if (search) data = data.filter(s => s.name.toLowerCase().includes(search) || s.service_type.includes(search));
+  if (catFilter) data = data.filter(s => s.category_id === catFilter);
+  if (statusFilter !== '') data = data.filter(s => String(s.is_active) === statusFilter);
+
+  document.getElementById('servicesTableBody').innerHTML = data.length ? `
+    <div style="overflow-x:auto">
+    <table><thead><tr>
+      <th>Service</th><th>Type</th><th>Category</th><th>Fees</th><th>Fields</th><th>Docs</th><th>Status</th><th>Actions</th>
+    </tr></thead>
+    <tbody>${data.map(s => {
+      const total = (s.total_fee || (s.govt_fee + s.platform_fee + (s.platform_fee * (s.gst_percent||18)/100))).toFixed(2);
+      return `<tr>
+        <td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">${s.icon||'📋'}</span><div><div style="font-weight:600">${s.name}</div><div style="font-size:11px;color:var(--muted)">${s.short_name}</div></div></div></td>
+        <td><span style="font-family:monospace;font-size:11px;background:#f0f2f7;padding:2px 7px;border-radius:4px">${s.service_type}</span></td>
+        <td>${s.category_name||'–'}</td>
+        <td><div style="font-weight:700;color:var(--brand)">₹${total}</div><div style="font-size:10px;color:var(--muted)">Govt: ₹${s.govt_fee} + Platform: ₹${s.platform_fee}</div></td>
+        <td style="text-align:center">${s.field_count||0}</td>
+        <td style="text-align:center">${s.doc_count||0}</td>
+        <td><span class="pill ${s.is_active?'active':'inactive'}">${s.is_active?'Active':'Inactive'}</span>${s.is_free?'<span class="pill free" style="margin-left:4px">Free</span>':''}</td>
+        <td>
+          <div style="display:flex;gap:4px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="openServiceModal('${s.id}')">✏️ Edit</button>
+            <button class="btn btn-blue btn-sm" onclick="editFieldsFor('${s.id}','${s.name}')">📝 Fields</button>
+            <button class="btn btn-orange btn-sm" onclick="editDocsFor('${s.id}','${s.name}')">📎 Docs</button>
+            <button class="btn ${s.is_active?'btn-danger':'btn-green'} btn-sm" onclick="toggleService('${s.id}',${s.is_active})">${s.is_active?'Disable':'Enable'}</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('')}</tbody></table></div>` : '<div class="empty"><span class="ei">🔍</span><h3>No services found</h3></div>';
+}
+
+async function toggleService(id, current) {
+  const res = await api(`/admin/services/${id}`, { method: 'PUT', body: { is_active: !current } });
+  if (res?.ok || res?.data?.offline) {
+    const svc = allServices.find(s => s.id === id);
+    if (svc) svc.is_active = current ? 0 : 1;
+    renderServicesTable();
+    showToast(`Service ${current ? 'disabled' : 'enabled'}`, 'success');
+  } else showToast(res?.data?.message || 'Failed', 'error');
+}
+
+// ─── SERVICE MODAL ────────────────────────────────────
+const ICONS = ['📋','🪙','🪪','📘','🚗','🏢','📄','✍️','💳','🏥','👷','👴','📱','⚡','💰','🏦','🔍','📝','🖨️','🚘','📡','🌐','🛡️','🔄','⚠️','🎨','📦','🏛️','🗺️','🤝'];
+const COLORS = { red:'#e74c3c', blue:'#2980b9', green:'#27ae60', orange:'#e67e22', purple:'#8e44ad', teal:'#00b894', pink:'#e91e63', gray:'#95a5a6' };
+
+function openServiceModal(id = null) {
+  const svc = id ? allServices.find(s => s.id === id) : null;
+  const title = svc ? `Edit Service – ${svc.name}` : 'Add New Service';
+  let selIcon = svc?.icon || '📋';
+  let selColor = svc?.color || 'blue';
+
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchModalTab(this,'tab-basic')">Basic Info</button>
+      <button class="tab-btn" onclick="switchModalTab(this,'tab-fees')">Fees</button>
+      <button class="tab-btn" onclick="switchModalTab(this,'tab-advanced')">Advanced</button>
+    </div>
+    <div class="tab-pane active" id="tab-basic">
+      <div class="form-grid" style="margin-bottom:14px">
+        <div class="fg"><label>Service Type (slug) <span class="req">*</span></label>
+          <input id="m-type" value="${svc?.service_type||''}" placeholder="pan_new" ${svc?'readonly style="background:#f4f5f7"':''}>
+          <span class="hint">Lowercase, underscores. Cannot be changed after creation.</span></div>
+        <div class="fg"><label>Display Name <span class="req">*</span></label><input id="m-name" value="${svc?.name||''}" placeholder="New PAN Card Application"></div>
+        <div class="fg"><label>Short Name <span class="req">*</span></label><input id="m-short" value="${svc?.short_name||''}" placeholder="New PAN"></div>
+        <div class="fg"><label>Category <span class="req">*</span></label>
+          <select id="m-cat">${allCategories.map(c=>`<option value="${c.id}" ${svc?.category_id===c.id?'selected':''}>${c.icon} ${c.name}</option>`).join('')}</select></div>
+        <div class="fg full"><label>Description</label><textarea id="m-desc" rows="2">${svc?.description||''}</textarea></div>
+        <div class="fg full"><label>Eligibility</label><textarea id="m-elig" rows="2">${svc?.eligibility||''}</textarea></div>
+        <div class="fg full"><label>Help Text (shown below form)</label><textarea id="m-help" rows="2">${svc?.help_text||''}</textarea></div>
+        <div class="fg"><label>Processing Days</label><input id="m-days" type="number" min="0" value="${svc?.processing_days||7}"></div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:12px;font-weight:600;display:block;margin-bottom:8px">Icon</label>
+        <div class="icon-grid" id="iconGrid">${ICONS.map(ic=>`<div class="icon-opt ${ic===selIcon?'selected':''}" onclick="selectIcon(this,'${ic}')" data-icon="${ic}">${ic}</div>`).join('')}</div>
+        <input type="hidden" id="m-icon" value="${selIcon}">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;display:block;margin-bottom:8px">Colour</label>
+        <div class="color-opts">${Object.entries(COLORS).map(([k,v])=>`<div class="color-opt ${k===selColor?'selected':''}" style="background:${v}" onclick="selectColor(this,'${k}')" data-color="${k}" title="${k}"></div>`).join('')}</div>
+        <input type="hidden" id="m-color" value="${selColor}">
+      </div>
+    </div>
+    <div class="tab-pane" id="tab-fees">
+      <div class="form-grid">
+        <div class="fg"><label>Government Fee (₹)</label><input id="m-govt" type="number" min="0" step="0.01" value="${svc?.govt_fee??0}" oninput="updateFeePreview()"></div>
+        <div class="fg"><label>Platform / Service Fee (₹)</label><input id="m-platform" type="number" min="0" step="0.01" value="${svc?.platform_fee??0}" oninput="updateFeePreview()"></div>
+        <div class="fg"><label>GST on Platform Fee (%)</label><input id="m-gst" type="number" min="0" max="28" value="${svc?.gst_percent??18}" oninput="updateFeePreview()"></div>
+        <div class="fg"><label>Fee Change Reason (for history)</label><input id="m-fee-reason" placeholder="e.g. Annual revision"></div>
+      </div>
+      <div class="fee-preview" id="feePreview"></div>
+    </div>
+    <div class="tab-pane" id="tab-advanced">
+      <div class="form-grid">
+        <div class="fg"><label>Sort Order</label><input id="m-sort" type="number" min="0" value="${svc?.sort_order??0}"></div>
+        <div class="fg"><label>External URL (optional redirect)</label><input id="m-url" value="${svc?.external_url||''}" placeholder="https://..."></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px">
+        ${[
+          ['m-active','is_active','Active (visible on portal)',svc?.is_active??1],
+          ['m-free','is_free','Mark as FREE service',svc?.is_free??0],
+          ['m-kyc','requires_kyc','Requires KYC verification',svc?.requires_kyc??0],
+          ['m-home','show_on_home','Show on homepage grid',svc?.show_on_home??1],
+        ].map(([id,name,label,val])=>`
+          <div class="fg"><div class="toggle-row">
+            <button class="toggle ${val?'on':''}" id="${id}" onclick="this.classList.toggle('on')"></button>
+            <span style="font-size:13px;font-weight:500">${label}</span>
+          </div></div>`).join('')}
+      </div>
+    </div>`;
+
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveService('${id||''}')">💾 ${svc?'Update':'Create'} Service</button>`;
+  openModal();
+  updateFeePreview();
+}
+
+function selectIcon(el, icon) {
+  document.querySelectorAll('.icon-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('m-icon').value = icon;
+}
+function selectColor(el, color) {
+  document.querySelectorAll('.color-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('m-color').value = color;
+}
+function updateFeePreview() {
+  const govt = parseFloat(document.getElementById('m-govt')?.value || 0);
+  const plat = parseFloat(document.getElementById('m-platform')?.value || 0);
+  const gst  = parseFloat(document.getElementById('m-gst')?.value || 18);
+  const gstAmt = plat * gst / 100;
+  const total = govt + plat + gstAmt;
+  const el = document.getElementById('feePreview');
+  if (el) el.innerHTML = `
+    <div class="fee-row"><span>Government Fee</span><span>₹${govt.toFixed(2)}</span></div>
+    <div class="fee-row"><span>Platform Fee</span><span>₹${plat.toFixed(2)}</span></div>
+    <div class="fee-row"><span>GST on Platform (${gst}%)</span><span>₹${gstAmt.toFixed(2)}</span></div>
+    <div class="fee-row total"><span>Citizen Pays</span><span style="color:var(--brand);font-family:'Rajdhani',sans-serif;font-size:18px">₹${total.toFixed(2)}</span></div>
+    ${total===0?'<div style="margin-top:8px;padding:8px;background:#e8f8ef;border-radius:7px;font-size:12px;color:var(--green);font-weight:600">✅ This is a FREE service</div>':''}`;
+}
+
+async function saveService(id) {
+  const body = {
+    service_type: document.getElementById('m-type').value.trim(),
+    name:         document.getElementById('m-name').value.trim(),
+    short_name:   document.getElementById('m-short').value.trim(),
+    category_id:  document.getElementById('m-cat').value,
+    description:  document.getElementById('m-desc').value.trim(),
+    eligibility:  document.getElementById('m-elig').value.trim(),
+    help_text:    document.getElementById('m-help').value.trim(),
+    processing_days: parseInt(document.getElementById('m-days').value||7),
+    govt_fee:     parseFloat(document.getElementById('m-govt').value||0),
+    platform_fee: parseFloat(document.getElementById('m-platform').value||0),
+    gst_percent:  parseFloat(document.getElementById('m-gst').value||18),
+    fee_change_reason: document.getElementById('m-fee-reason').value.trim()||null,
+    icon:         document.getElementById('m-icon').value,
+    color:        document.getElementById('m-color').value,
+    sort_order:   parseInt(document.getElementById('m-sort').value||0),
+    external_url: document.getElementById('m-url').value.trim()||null,
+    is_active:    document.getElementById('m-active').classList.contains('on') ? 1 : 0,
+    is_free:      document.getElementById('m-free').classList.contains('on') ? 1 : 0,
+    requires_kyc: document.getElementById('m-kyc').classList.contains('on') ? 1 : 0,
+    show_on_home: document.getElementById('m-home').classList.contains('on') ? 1 : 0,
+  };
+  if (!body.service_type || !body.name || !body.short_name) { showToast('Fill required fields', 'error'); return; }
+
+  const res = id
+    ? await api(`/admin/services/${id}`, { method: 'PUT', body })
+    : await api('/admin/services', { method: 'POST', body });
+
+  if (res?.ok || res?.data?.offline) {
+    showToast(id ? 'Service updated!' : 'Service created!', 'success');
+    closeModal();
+    if (res?.data?.offline) {
+      if (!id) { body.id = 'demo-' + Date.now(); body.category_name = allCategories.find(c=>c.id===body.category_id)?.name||''; allServices.push(body); }
+      else { const idx = allServices.findIndex(s=>s.id===id); if(idx>=0) Object.assign(allServices[idx], body); }
+    } else await loadAllData();
+    renderServicesTable();
+  } else showToast(res?.data?.message || 'Failed', 'error');
+}
+
+// ─── CATEGORIES ───────────────────────────────────────
+async function loadCategories() {
+  const res = await api('/admin/services/categories');
+  allCategories = res?.ok ? (res.data.data || []) : DEMO_CATS;
+  document.getElementById('categoriesGrid').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      ${allCategories.map(c => `
+        <div class="tbl-wrap" style="padding:16px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="font-size:28px">${c.icon}</span>
+            <div style="flex:1"><div style="font-weight:700;font-size:14px">${c.name}</div><div style="font-size:11px;color:var(--muted)">${c.service_count||0} services</div></div>
+            <span class="pill ${c.is_active?'active':'inactive'}">${c.is_active?'Active':'Off'}</span>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px">${c.description||'No description'}</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="openCategoryModal('${c.id}')">✏️ Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteCategory('${c.id}','${c.name}')">🗑️ Delete</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  populateCategoryFilters();
+}
+
+function openCategoryModal(id = null) {
+  const cat = id ? allCategories.find(c => c.id === id) : null;
+  document.getElementById('modalTitle').textContent = cat ? 'Edit Category' : 'Add Category';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-grid">
+      <div class="fg"><label>Name <span class="req">*</span></label><input id="cm-name" value="${cat?.name||''}" placeholder="e.g. Identity & Aadhaar"></div>
+      <div class="fg"><label>Sort Order</label><input id="cm-sort" type="number" min="0" value="${cat?.sort_order??0}"></div>
+      <div class="fg full"><label>Description</label><textarea id="cm-desc">${cat?.description||''}</textarea></div>
+    </div>
+    <div style="margin-top:14px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:8px">Icon</label>
+      <div class="icon-grid">${ICONS.map(ic=>`<div class="icon-opt ${ic===(cat?.icon||'📋')?'selected':''}" onclick="document.getElementById('cm-icon').value='${ic}';this.closest('.icon-grid').querySelectorAll('.icon-opt').forEach(e=>e.classList.remove('selected'));this.classList.add('selected')">${ic}</div>`).join('')}</div>
+      <input type="hidden" id="cm-icon" value="${cat?.icon||'📋'}">
+    </div>
+    <div style="margin-top:14px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:8px">Colour</label>
+      <div class="color-opts">${Object.entries(COLORS).map(([k,v])=>`<div class="color-opt ${k===(cat?.color||'blue')?'selected':''}" style="background:${v}" onclick="document.getElementById('cm-color').value='${k}';this.closest('.color-opts').querySelectorAll('.color-opt').forEach(e=>e.classList.remove('selected'));this.classList.add('selected')" title="${k}"></div>`).join('')}</div>
+      <input type="hidden" id="cm-color" value="${cat?.color||'blue'}">
+    </div>`;
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveCategory('${id||''}')">💾 ${cat?'Update':'Create'} Category</button>`;
+  openModal();
+}
+
+async function saveCategory(id) {
+  const body = { name: document.getElementById('cm-name').value.trim(), description: document.getElementById('cm-desc').value, icon: document.getElementById('cm-icon').value, color: document.getElementById('cm-color').value, sort_order: parseInt(document.getElementById('cm-sort').value||0) };
+  if (!body.name) { showToast('Name required', 'error'); return; }
+  const res = id ? await api(`/admin/services/categories/${id}`, { method:'PUT', body }) : await api('/admin/services/categories', { method:'POST', body });
+  if (res?.ok || res?.data?.offline) { showToast(id?'Category updated':'Category created', 'success'); closeModal(); loadCategories(); }
+  else showToast(res?.data?.message||'Failed', 'error');
+}
+
+async function deleteCategory(id, name) {
+  if (!confirm(`Delete category "${name}"? Services must be reassigned first.`)) return;
+  const res = await api(`/admin/services/categories/${id}`, { method: 'DELETE' });
+  if (res?.ok || res?.data?.offline) { showToast('Category deleted', 'success'); loadCategories(); }
+  else showToast(res?.data?.message || 'Failed', 'error');
+}
+
+// ─── FORM BUILDER ─────────────────────────────────────
+function setupFormBuilder() {
+  const sel = document.getElementById('fb-service-sel');
+  if (sel.options.length <= 1) allServices.forEach(s => { const o = new Option(s.name, s.id); sel.add(o); });
+}
+
+async function loadFormFields() {
+  const id = document.getElementById('fb-service-sel').value;
+  if (!id) return;
+  const svc = allServices.find(s => s.id === id);
+  const res = await api(`/admin/services/${id}/fields`);
+  const fields = res?.ok ? (res.data.data || []) : [];
+  const sections = [...new Set(fields.map(f => f.section))];
+
+  document.getElementById('formBuilderContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700">${svc?.icon||'📋'} ${svc?.name} – Form Fields</div>
+      <button class="btn btn-primary" onclick="openAddFieldModal('${id}')">+ Add Field</button>
+    </div>
+    ${fields.length ? sections.map(sec => `
+      <div style="margin-bottom:16px">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">${sec}</div>
+        ${fields.filter(f => f.section === sec).map(f => `
+          <div class="field-item">
+            <span class="drag-handle">⠿</span>
+            <div class="field-info">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                <span style="font-weight:600;font-size:13px">${f.field_label}</span>
+                <span class="field-name-tag">${f.field_name}</span>
+                <span class="field-type-tag">${f.field_type}</span>
+                ${f.is_required?'<span class="pill active" style="font-size:9px;padding:1px 6px">Required</span>':'<span class="pill inactive" style="font-size:9px;padding:1px 6px">Optional</span>'}
+                ${f.grid_cols===2?'<span style="font-size:10px;color:var(--purple);font-weight:600">Full Width</span>':''}
+              </div>
+              ${f.placeholder?`<div style="font-size:11px;color:var(--muted)">Placeholder: "${f.placeholder}"</div>`:''}
+              ${f.options?`<div style="font-size:11px;color:var(--muted)">Options: ${JSON.parse(f.options||'[]').join(', ')}</div>`:''}
+              ${f.help_text?`<div style="font-size:11px;color:var(--blue)">ℹ ${f.help_text}</div>`:''}
+            </div>
+            <div style="display:flex;gap:4px">
+              <button class="btn btn-ghost btn-sm" onclick="openEditFieldModal(${JSON.stringify(f).replace(/"/g,'&quot;')})">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteField('${f.id}','${id}')">🗑️</button>
+            </div>
+          </div>`).join('')}
+      </div>`).join('') :
+      `<div class="empty"><span class="ei">📝</span><h3>No fields yet</h3><p>Add form fields to build the application form for this service</p></div>`}`;
+}
+
+function openAddFieldModal(serviceId) {
+  document.getElementById('modalTitle').textContent = 'Add Form Field';
+  document.getElementById('modalBody').innerHTML = renderFieldForm({});
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveField('${serviceId}',null)">Add Field</button>`;
+  openModal();
+}
+function openEditFieldModal(field) {
+  document.getElementById('modalTitle').textContent = 'Edit Form Field';
+  document.getElementById('modalBody').innerHTML = renderFieldForm(field);
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveField('${field.service_id}','${field.id}')">Update Field</button>`;
+  openModal();
+}
+
+function renderFieldForm(f) {
+  const types = ['text','number','email','tel','date','select','textarea','radio','checkbox'];
+  const sections = ['Personal Details','Contact Details','Address Details','Business Details','Certificate Details','Licence Details','Owner Details','Financial Details','Recharge Details','Bill Details'];
+  return `
+    <div class="form-grid">
+      <div class="fg"><label>Field Name (key) <span class="req">*</span></label><input id="ff-name" value="${f.field_name||''}" placeholder="aadhaar_number" ${f.id?'readonly style="background:#f4f5f7"':''}><span class="hint">Lowercase, underscores only</span></div>
+      <div class="fg"><label>Field Label <span class="req">*</span></label><input id="ff-label" value="${f.field_label||''}" placeholder="Aadhaar Number"></div>
+      <div class="fg"><label>Field Type <span class="req">*</span></label><select id="ff-type" onchange="toggleOptionsField()">${types.map(t=>`<option ${t===f.field_type?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="fg"><label>Section / Group</label><select id="ff-section">${sections.map(s=>`<option ${s===(f.section||'Personal Details')?'selected':''}>${s}</option>`).join('')}</select></div>
+      <div class="fg"><label>Placeholder</label><input id="ff-ph" value="${f.placeholder||''}" placeholder="Hint text inside input"></div>
+      <div class="fg"><label>Sort Order</label><input id="ff-sort" type="number" min="0" value="${f.sort_order||0}"></div>
+      <div class="fg full" id="ff-opts-wrap" style="${['select','radio','checkbox'].includes(f.field_type)?'':'display:none'}">
+        <label>Options (one per line)</label>
+        <textarea id="ff-opts" rows="4">${f.options ? JSON.parse(f.options).join('\n') : ''}</textarea>
+        <span class="hint">For select/radio/checkbox fields</span>
+      </div>
+      <div class="fg full"><label>Validation JSON</label><input id="ff-valid" value='${f.validation||'{"required":true}'}' placeholder='{"required":true,"minLength":2}'></div>
+      <div class="fg full"><label>Help Text</label><input id="ff-help" value="${f.help_text||''}" placeholder="Shown below the field"></div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:12px">
+      <div class="fg"><div class="toggle-row"><button class="toggle ${f.is_required!==0?'on':''}" id="ff-req" onclick="this.classList.toggle('on')"></button><span>Required</span></div></div>
+      <div class="fg"><div class="toggle-row"><button class="toggle ${f.is_active!==0?'on':''}" id="ff-active" onclick="this.classList.toggle('on')"></button><span>Active</span></div></div>
+      <div class="fg"><label style="font-size:12px">Width</label><select id="ff-grid"><option value="1" ${f.grid_cols!==2?'selected':''}>Half (50%)</option><option value="2" ${f.grid_cols===2?'selected':''}>Full (100%)</option></select></div>
+    </div>`;
+}
+
+function toggleOptionsField() {
+  const type = document.getElementById('ff-type').value;
+  document.getElementById('ff-opts-wrap').style.display = ['select','radio','checkbox'].includes(type) ? '' : 'none';
+}
+
+async function saveField(serviceId, fieldId) {
+  const optsRaw = document.getElementById('ff-opts').value.trim();
+  const optsArr = optsRaw ? optsRaw.split('\n').map(s=>s.trim()).filter(Boolean) : null;
+  const body = {
+    field_name:   document.getElementById('ff-name').value.trim(),
+    field_label:  document.getElementById('ff-label').value.trim(),
+    field_type:   document.getElementById('ff-type').value,
+    placeholder:  document.getElementById('ff-ph').value.trim(),
+    options:      optsArr,
+    validation:   document.getElementById('ff-valid').value.trim() || '{"required":true}',
+    help_text:    document.getElementById('ff-help').value.trim(),
+    sort_order:   parseInt(document.getElementById('ff-sort').value||0),
+    is_required:  document.getElementById('ff-req').classList.contains('on') ? 1 : 0,
+    is_active:    document.getElementById('ff-active').classList.contains('on') ? 1 : 0,
+    section:      document.getElementById('ff-section').value,
+    grid_cols:    parseInt(document.getElementById('ff-grid').value||1),
+  };
+  if (!body.field_name || !body.field_label) { showToast('Field name and label required', 'error'); return; }
+  const res = fieldId
+    ? await api(`/admin/services/fields/${fieldId}`, { method:'PUT', body })
+    : await api(`/admin/services/${serviceId}/fields`, { method:'POST', body });
+  if (res?.ok || res?.data?.offline) {
+    showToast(fieldId ? 'Field updated' : 'Field added', 'success');
+    closeModal();
+    await loadFormFields();
+  } else showToast(res?.data?.message || 'Failed', 'error');
+}
+
+async function deleteField(fieldId, serviceId) {
+  if (!confirm('Delete this field?')) return;
+  const res = await api(`/admin/services/fields/${fieldId}`, { method:'DELETE' });
+  if (res?.ok || res?.data?.offline) { showToast('Field deleted', 'success'); await loadFormFields(); }
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+function editFieldsFor(id, name) {
+  navigate('form-builder');
+  setTimeout(() => { document.getElementById('fb-service-sel').value = id; loadFormFields(); }, 200);
+}
+
+// ─── DOCUMENTS ────────────────────────────────────────
+function setupDocManager() {
+  const sel = document.getElementById('doc-service-sel');
+  if (sel.options.length <= 1) allServices.forEach(s => { const o = new Option(s.name, s.id); sel.add(o); });
+}
+
+async function loadDocuments() {
+  const id = document.getElementById('doc-service-sel').value;
+  if (!id) return;
+  const svc = allServices.find(s => s.id === id);
+  const res = await api(`/admin/services/${id}/documents`);
+  const docs = res?.ok ? (res.data.data || []) : [];
+  const docTypeIcons = { pdf:'📄', jpg:'🖼️', png:'🖼️', 'pdf,jpg,png':'📎' };
+
+  document.getElementById('documentsContent').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700">${svc?.icon||'📋'} ${svc?.name} – Required Documents</div>
+      <button class="btn btn-primary" onclick="openAddDocModal('${id}')">+ Add Document</button>
+    </div>
+    ${docs.length ? docs.map(doc => `
+      <div class="doc-item">
+        <div class="doc-icon">📎</div>
+        <div class="doc-info">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-weight:700;font-size:13px">${doc.doc_name}</span>
+            <span style="font-family:monospace;font-size:10px;background:#f0f2f7;padding:1px 6px;border-radius:4px;color:var(--muted)">${doc.doc_key}</span>
+            <span class="pill ${doc.is_required?'active':'inactive'}">${doc.is_required?'Required':'Optional'}</span>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:6px">${doc.description||'No description'}</div>
+          <div class="doc-types">
+            ${(doc.accepted_types||'').split(',').map(t => `<span class="doc-type-tag">.${t.trim()}</span>`).join('')}
+            <span style="font-size:10px;color:var(--muted);margin-left:4px">Max ${doc.max_size_mb}MB</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:4px;flex-shrink:0">
+          <button class="btn btn-ghost btn-sm" onclick="openEditDocModal(${JSON.stringify(doc).replace(/"/g,'&quot;')})">✏️ Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteDocument('${doc.id}','${id}')">🗑️</button>
+        </div>
+      </div>`).join('') :
+      `<div class="empty"><span class="ei">📎</span><h3>No documents configured</h3><p>Add the documents applicants need to upload for this service</p></div>`}`;
+}
+
+function openAddDocModal(serviceId) {
+  document.getElementById('modalTitle').textContent = 'Add Document Requirement';
+  document.getElementById('modalBody').innerHTML = renderDocForm({});
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveDocument('${serviceId}',null)">Add Document</button>`;
+  openModal();
+}
+function openEditDocModal(doc) {
+  document.getElementById('modalTitle').textContent = 'Edit Document Requirement';
+  document.getElementById('modalBody').innerHTML = renderDocForm(doc);
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveDocument('${doc.service_id}','${doc.id}')">Update</button>`;
+  openModal();
+}
+
+function renderDocForm(d) {
+  return `
+    <div class="form-grid">
+      <div class="fg"><label>Document Name <span class="req">*</span></label><input id="df-name" value="${d.doc_name||''}" placeholder="e.g. Aadhaar Card"></div>
+      <div class="fg"><label>Document Key (slug) <span class="req">*</span></label><input id="df-key" value="${d.doc_key||''}" placeholder="aadhaar_card" ${d.id?'readonly style="background:#f4f5f7"':''}><span class="hint">Lowercase, underscores only</span></div>
+      <div class="fg full"><label>Description</label><textarea id="df-desc" rows="2">${d.description||''}</textarea></div>
+      <div class="fg"><label>Accepted File Types</label><input id="df-types" value="${d.accepted_types||'pdf,jpg,png'}" placeholder="pdf,jpg,png"><span class="hint">Comma-separated: pdf,jpg,png</span></div>
+      <div class="fg"><label>Max Size (MB)</label><input id="df-size" type="number" min="1" max="20" value="${d.max_size_mb||2}"></div>
+      <div class="fg"><label>Sort Order</label><input id="df-sort" type="number" min="0" value="${d.sort_order||0}"></div>
+      <div class="fg"><label>Sample Document URL</label><input id="df-sample" value="${d.sample_url||''}" placeholder="https://... (optional example)"></div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:12px">
+      <div class="fg"><div class="toggle-row"><button class="toggle ${d.is_required!==0?'on':''}" id="df-req" onclick="this.classList.toggle('on')"></button><span>Required Document</span></div></div>
+      <div class="fg"><div class="toggle-row"><button class="toggle ${d.is_active!==0?'on':''}" id="df-active" onclick="this.classList.toggle('on')"></button><span>Active</span></div></div>
+    </div>`;
+}
+
+async function saveDocument(serviceId, docId) {
+  const body = {
+    doc_name:       document.getElementById('df-name').value.trim(),
+    doc_key:        document.getElementById('df-key').value.trim(),
+    description:    document.getElementById('df-desc').value.trim(),
+    accepted_types: document.getElementById('df-types').value.trim(),
+    max_size_mb:    parseInt(document.getElementById('df-size').value||2),
+    sort_order:     parseInt(document.getElementById('df-sort').value||0),
+    sample_url:     document.getElementById('df-sample').value.trim()||null,
+    is_required:    document.getElementById('df-req').classList.contains('on') ? 1 : 0,
+    is_active:      document.getElementById('df-active').classList.contains('on') ? 1 : 0,
+  };
+  if (!body.doc_name || !body.doc_key) { showToast('Name and key required', 'error'); return; }
+  const res = docId
+    ? await api(`/admin/services/documents/${docId}`, { method:'PUT', body })
+    : await api(`/admin/services/${serviceId}/documents`, { method:'POST', body });
+  if (res?.ok || res?.data?.offline) { showToast(docId?'Document updated':'Document added', 'success'); closeModal(); await loadDocuments(); }
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+async function deleteDocument(docId, serviceId) {
+  if (!confirm('Delete this document requirement?')) return;
+  const res = await api(`/admin/services/documents/${docId}`, { method:'DELETE' });
+  if (res?.ok || res?.data?.offline) { showToast('Deleted', 'success'); await loadDocuments(); }
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+function editDocsFor(id, name) {
+  navigate('documents');
+  setTimeout(() => { document.getElementById('doc-service-sel').value = id; loadDocuments(); }, 200);
+}
+
+// ─── APPLICATIONS ─────────────────────────────────────
+async function loadApplications() {
+  const res = await api('/applications?limit=100');
+  allApps = res?.ok ? (res.data.data||[]) : DEMO_APPS_ADMIN;
+  const appSvcSel = document.getElementById('app-svc-filter');
+  if (appSvcSel.options.length <= 1) [...new Set(allApps.map(a=>a.service_name))].forEach(n => appSvcSel.add(new Option(n,n)));
+  document.getElementById('sb-app-count').textContent = allApps.filter(a=>['submitted','processing','under_review'].includes(a.status)).length;
+  renderAppsTable();
+}
+
+function renderAppsTable() {
+  const search = document.getElementById('app-search')?.value.toLowerCase()||'';
+  const statusF = document.getElementById('app-status-filter')?.value||'';
+  const svcF = document.getElementById('app-svc-filter')?.value||'';
+  let data = allApps;
+  if (search) data = data.filter(a => (a.ref_number||'').toLowerCase().includes(search) || (a.applicant_name||'').toLowerCase().includes(search));
+  if (statusF) data = data.filter(a => a.status === statusF);
+  if (svcF) data = data.filter(a => a.service_name === svcF);
+
+  document.getElementById('appsTableBody').innerHTML = data.length ? `<div style="overflow-x:auto"><table>
+    <thead><tr><th>Reference</th><th>Applicant</th><th>Service</th><th>Fees</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+    <tbody>${data.map(a => `<tr>
+      <td style="font-family:monospace;font-size:12px;font-weight:600">${a.ref_number||'–'}</td>
+      <td><div style="font-weight:600">${a.applicant_name||'–'}</div><div style="font-size:11px;color:var(--muted)">${a.applicant_mobile||''}</div></td>
+      <td>${a.service_name}</td>
+      <td>₹${parseFloat(a.fees||0).toFixed(2)}</td>
+      <td><span class="pill ${a.payment_status==='paid'?'active':a.payment_status==='not_required'?'free':'inactive'}">${a.payment_status}</span></td>
+      <td><span class="pill ${a.status}">${a.status.replace(/_/g,' ')}</span></td>
+      <td style="font-size:11px;color:var(--muted)">${a.submitted_at?new Date(a.submitted_at).toLocaleDateString('en-IN'):'–'}</td>
+      <td><button class="btn btn-blue btn-sm" onclick="openStatusModal('${a.id}','${a.status}','${a.ref_number}')">Update Status</button></td>
+    </tr>`).join('')}</tbody>
+    </table></div>` : '<div class="empty"><span class="ei">📋</span><h3>No applications found</h3></div>';
+}
+
+function openStatusModal(id, status, ref) {
+  document.getElementById('modalTitle').textContent = `Update Status – ${ref}`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-grid single">
+      <div class="fg"><label>New Status</label>
+        <select id="st-status">
+          ${['processing','under_review','approved','rejected','dispatched','completed'].map(s=>`<option ${s===status?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="fg"><label>Officer Notes</label><textarea id="st-notes" placeholder="Internal notes…"></textarea></div>
+      <div class="fg"><label>Rejection Reason (if rejecting)</label><input id="st-reason" placeholder="Reason for rejection"></div>
+      <div class="fg"><label>Certificate URL (if approved)</label><input id="st-cert" placeholder="https://... download link"></div>
+    </div>`;
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="updateAppStatus('${id}')">Update Status</button>`;
+  openModal();
+}
+
+async function updateAppStatus(id) {
+  const body = { status: document.getElementById('st-status').value, notes: document.getElementById('st-notes').value, rejection_reason: document.getElementById('st-reason').value, certificate_url: document.getElementById('st-cert').value };
+  const res = await api(`/applications/${id}/status`, { method:'PUT', body });
+  if (res?.ok || res?.data?.offline) {
+    showToast('Status updated', 'success'); closeModal();
+    const app = allApps.find(a => a.id === id); if (app) app.status = body.status;
+    renderAppsTable();
+  } else showToast(res?.data?.message||'Failed','error');
+}
+
+// ─── USERS ────────────────────────────────────────────
+async function loadUsers() {
+  const res = await api('/admin/users?limit=200');
+  allUsers = res?.ok ? (res.data.data||[]) : DEMO_USERS;
+  renderUsersTable();
+}
+
+function renderUsersTable() {
+  const search = document.getElementById('user-search')?.value.toLowerCase()||'';
+  const roleF = document.getElementById('user-role-filter')?.value||'';
+  const kycF = document.getElementById('user-kyc-filter')?.value||'';
+  let data = allUsers;
+  if (search) data = data.filter(u => u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search) || u.mobile.includes(search));
+  if (roleF) data = data.filter(u => u.role === roleF);
+  if (kycF) data = data.filter(u => u.kyc_status === kycF);
+
+  document.getElementById('usersTableBody').innerHTML = data.length ? `<div style="overflow-x:auto"><table>
+    <thead><tr><th>Name</th><th>Mobile</th><th>Role</th><th>KYC</th><th>Wallet</th><th>Apps</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${data.map(u => `<tr>
+      <td><div style="font-weight:600">${u.name}</div><div style="font-size:11px;color:var(--muted)">${u.email}</div></td>
+      <td>${u.mobile}</td>
+      <td><span class="pill ${u.role==='admin'?'active':u.role==='officer'?'free':'inactive'}">${u.role}</span></td>
+      <td><span class="pill ${u.kyc_status==='verified'?'active':u.kyc_status==='rejected'?'inactive':'paid'}">${u.kyc_status}</span></td>
+      <td>₹${parseFloat(u.wallet_balance||0).toFixed(2)}</td>
+      <td>${u.app_count||0}</td>
+      <td><span class="pill ${u.is_active?'active':'inactive'}">${u.is_active?'Active':'Disabled'}</span></td>
+      <td><div style="display:flex;gap:4px;flex-wrap:wrap">
+        ${u.kyc_status==='pending'?`<button class="btn btn-green btn-sm" onclick="kycAction('${u.id}','verified')">✓ KYC</button><button class="btn btn-danger btn-sm" onclick="kycAction('${u.id}','rejected')">✗</button>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="toggleUserActive('${u.id}',${u.is_active})">${u.is_active?'Block':'Unblock'}</button>
+        <button class="btn btn-orange btn-sm" onclick="openCreditWalletModal('${u.id}','${u.name}')">💰 Credit</button>
+      </div></td>
+    </tr>`).join('')}</tbody>
+    </table></div>` : '<div class="empty"><span class="ei">👥</span><h3>No users found</h3></div>';
+}
+
+async function kycAction(userId, status) {
+  const reason = status === 'rejected' ? prompt('Rejection reason:') : '';
+  const res = await api(`/admin/users/${userId}/kyc`, { method:'PUT', body: { kyc_status: status, reason } });
+  if (res?.ok || res?.data?.offline) { showToast(`KYC ${status}`, 'success'); const u = allUsers.find(u=>u.id===userId); if(u) u.kyc_status=status; renderUsersTable(); }
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+async function toggleUserActive(userId, current) {
+  const res = await api(`/admin/users/${userId}/toggle-active`, { method:'PUT' });
+  if (res?.ok || res?.data?.offline) { const u = allUsers.find(u=>u.id===userId); if(u) u.is_active = current?0:1; renderUsersTable(); showToast(`User ${current?'blocked':'unblocked'}`, 'success'); }
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+function openCreditWalletModal(userId, userName) {
+  document.getElementById('modalTitle').textContent = `Credit Wallet – ${userName}`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-grid single">
+      <div class="fg"><label>Amount (₹) <span class="req">*</span></label><input id="cw-amt" type="number" min="1" placeholder="Amount to credit"></div>
+      <div class="fg"><label>Wallet</label><select id="cw-wallet"><option value="main">Cards Wallet</option><option value="pan">PAN Wallet</option></select></div>
+      <div class="fg"><label>Description / Reason <span class="req">*</span></label><input id="cw-desc" placeholder="e.g. Commission credit, refund"></div>
+    </div>`;
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-green" onclick="doCreditWallet('${userId}')">💰 Credit Wallet</button>`;
+  openModal();
+}
+
+async function doCreditWallet(userId) {
+  const amount = parseFloat(document.getElementById('cw-amt').value);
+  const wallet = document.getElementById('cw-wallet').value;
+  const description = document.getElementById('cw-desc').value.trim();
+  if (!amount || !description) { showToast('Fill all fields', 'error'); return; }
+  const res = await api('/wallet/credit', { method:'POST', body: { user_id: userId, amount, wallet, description } });
+  if (res?.ok || res?.data?.offline) { showToast(`₹${amount} credited successfully`, 'success'); closeModal(); loadUsers(); }
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+function openCreateOfficerModal() {
+  document.getElementById('modalTitle').textContent = 'Create Officer Account';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-grid">
+      <div class="fg"><label>Full Name <span class="req">*</span></label><input id="of-name"></div>
+      <div class="fg"><label>Email <span class="req">*</span></label><input id="of-email" type="email"></div>
+      <div class="fg"><label>Mobile <span class="req">*</span></label><input id="of-mobile" type="tel"></div>
+      <div class="fg"><label>Department</label><input id="of-dept" placeholder="e.g. Revenue, Transport"></div>
+      <div class="fg full"><label>Password <span class="req">*</span></label><input id="of-pass" type="password" placeholder="Min 8 chars, upper+lower+number"></div>
+    </div>`;
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-blue" onclick="createOfficer()">Create Officer</button>`;
+  openModal();
+}
+
+async function createOfficer() {
+  const body = { name:document.getElementById('of-name').value, email:document.getElementById('of-email').value, mobile:document.getElementById('of-mobile').value, password:document.getElementById('of-pass').value, department:document.getElementById('of-dept').value };
+  if (!body.name||!body.email||!body.mobile||!body.password) { showToast('Fill required fields','error'); return; }
+  const res = await api('/admin/users/create-officer', { method:'POST', body });
+  if (res?.ok || res?.data?.offline) { showToast('Officer account created','success'); closeModal(); loadUsers(); }
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+// ─── RETAILERS ────────────────────────────────────────
+async function loadRetailers() {
+  const res = await api('/retailers?limit=100');
+  const data = res?.ok ? (res.data.data||[]) : [];
+  document.getElementById('retailersContent').innerHTML = data.length ? `
+    <div class="tbl-wrap"><div style="overflow-x:auto"><table>
+      <thead><tr><th>Code</th><th>Retailer</th><th>Shop</th><th>Location</th><th>Commission</th><th>Agents</th><th>Status</th></tr></thead>
+      <tbody>${data.map(r=>`<tr>
+        <td style="font-family:monospace;font-weight:700">${r.retailer_code}</td>
+        <td><div style="font-weight:600">${r.name}</div><div style="font-size:11px;color:var(--muted)">${r.mobile}</div></td>
+        <td>${r.shop_name||'–'}</td>
+        <td>${r.district||'–'}, ${r.state||'–'}</td>
+        <td>${r.commission_rate}%</td>
+        <td style="text-align:center">${r.agents||0}</td>
+        <td><span class="pill ${r.is_active?'active':'inactive'}">${r.is_active?'Active':'Inactive'}</span></td>
+      </tr>`).join('')}</tbody>
+    </table></div></div>` : '<div class="empty"><span class="ei">🏪</span><h3>No retailers registered</h3></div>';
+}
+
+// ─── WALLET MGMT ──────────────────────────────────────
+async function loadWalletMgmt() {
+  const res = await api('/admin/services/list');
+  const svcs = res?.ok ? (res.data.data||[]) : allServices;
+  document.getElementById('walletMgmtContent').innerHTML = `
+    <div class="tbl-wrap" style="margin-bottom:14px">
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:13px">💰 Service Fee Manager</div>
+      <table>
+        <thead><tr><th>Service</th><th>Govt. Fee (₹)</th><th>Platform Fee (₹)</th><th>GST %</th><th>Total</th><th>Update</th></tr></thead>
+        <tbody>${svcs.map(s => {
+          const total = (s.govt_fee + s.platform_fee + (s.platform_fee * (s.gst_percent||18)/100)).toFixed(2);
+          return `<tr>
+            <td><strong>${s.name}</strong><br><span style="font-family:monospace;font-size:10px;color:var(--muted)">${s.service_type}</span></td>
+            <td><input class="setting-input" style="width:90px" id="fee-govt-${s.id}" value="${s.govt_fee}" type="number" min="0" step="0.01" oninput="calcFeeRow('${s.id}',${s.gst_percent})"></td>
+            <td><input class="setting-input" style="width:90px" id="fee-plat-${s.id}" value="${s.platform_fee}" type="number" min="0" step="0.01" oninput="calcFeeRow('${s.id}',${s.gst_percent})"></td>
+            <td><input class="setting-input" style="width:70px" id="fee-gst-${s.id}" value="${s.gst_percent||18}" type="number" min="0" max="28" oninput="calcFeeRow('${s.id}')"></td>
+            <td><strong id="fee-total-${s.id}" style="color:var(--brand)">₹${total}</strong></td>
+            <td><button class="btn btn-primary btn-sm" onclick="updateServiceFee('${s.id}')">Save</button></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>`;
+}
+
+function calcFeeRow(id) {
+  const g = parseFloat(document.getElementById(`fee-govt-${id}`)?.value||0);
+  const p = parseFloat(document.getElementById(`fee-plat-${id}`)?.value||0);
+  const t = parseFloat(document.getElementById(`fee-gst-${id}`)?.value||18);
+  const total = (g + p + p*t/100).toFixed(2);
+  const el = document.getElementById(`fee-total-${id}`);
+  if (el) el.textContent = `₹${total}`;
+}
+
+async function updateServiceFee(id) {
+  const body = { govt_fee: parseFloat(document.getElementById(`fee-govt-${id}`).value||0), platform_fee: parseFloat(document.getElementById(`fee-plat-${id}`).value||0), gst_percent: parseFloat(document.getElementById(`fee-gst-${id}`).value||18) };
+  const res = await api(`/admin/services/${id}`, { method:'PUT', body });
+  if (res?.ok || res?.data?.offline) showToast('Fee updated', 'success');
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+// ─── ANNOUNCEMENTS ────────────────────────────────────
+async function loadAnnouncements() {
+  const res = await api('/admin/services/announcements');
+  allAnnouncements = res?.ok ? (res.data.data||[]) : DEMO_ANNOUNCEMENTS;
+  renderAnnouncements();
+}
+
+function renderAnnouncements() {
+  const typeColors = {info:'var(--blue)',success:'var(--green)',warning:'var(--brand2)',alert:'var(--red)'};
+  document.getElementById('annContent').innerHTML = allAnnouncements.length ? allAnnouncements.map(a => `
+    <div style="background:var(--card);border:1px solid ${a.is_active?'var(--border)':'#f5c6c6'};border-radius:var(--r);padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh);display:flex;align-items:flex-start;gap:12px">
+      <div style="width:8px;height:8px;border-radius:50%;background:${typeColors[a.type]||'var(--blue)'};margin-top:6px;flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-weight:700;font-size:14px">${a.title}</span>
+          <span class="pill ${a.is_active?'active':'inactive'}">${a.is_active?'Active':'Off'}</span>
+          <span style="font-size:10px;background:#f0f2f7;padding:2px 7px;border-radius:5px;color:var(--muted)">${a.target_role}</span>
+          ${a.is_marquee?'<span style="font-size:10px;background:#fef5e7;padding:2px 7px;border-radius:5px;color:var(--brand2)">📢 Marquee</span>':''}
+        </div>
+        <div style="font-size:13px;color:var(--muted)">${a.message}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">By: ${a.created_by_name||'Admin'} · ${new Date(a.created_at).toLocaleDateString('en-IN')}</div>
+      </div>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <button class="btn btn-ghost btn-sm" onclick="openAnnModal('${a.id}')">✏️</button>
+        <button class="btn ${a.is_active?'btn-danger':'btn-green'} btn-sm" onclick="toggleAnn('${a.id}',${a.is_active})">${a.is_active?'Disable':'Enable'}</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAnn('${a.id}')">🗑️</button>
+      </div>
+    </div>`).join('') : '<div class="empty"><span class="ei">📢</span><h3>No announcements</h3></div>';
+}
+
+function openAnnModal(id=null) {
+  const ann = id ? allAnnouncements.find(a=>a.id===id) : null;
+  document.getElementById('modalTitle').textContent = ann ? 'Edit Announcement' : 'Add Announcement';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-grid single">
+      <div class="fg"><label>Title <span class="req">*</span></label><input id="an-title" value="${ann?.title||''}" placeholder="Announcement title"></div>
+      <div class="fg"><label>Message <span class="req">*</span></label><textarea id="an-msg">${ann?.message||''}</textarea></div>
+    </div>
+    <div class="form-grid">
+      <div class="fg"><label>Type</label><select id="an-type">${['info','success','warning','alert'].map(t=>`<option ${t===(ann?.type||'info')?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="fg"><label>Target Audience</label><select id="an-role">${['all','citizen','retailer','officer'].map(r=>`<option ${r===(ann?.target_role||'all')?'selected':''}>${r}</option>`).join('')}</select></div>
+      <div class="fg"><label>Start Date</label><input id="an-start" type="datetime-local" value="${ann?.starts_at||''}"></div>
+      <div class="fg"><label>End Date</label><input id="an-end" type="datetime-local" value="${ann?.ends_at||''}"></div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:12px">
+      <div class="fg"><div class="toggle-row"><button class="toggle ${ann?.is_active!==0?'on':''}" id="an-active" onclick="this.classList.toggle('on')"></button><span>Active</span></div></div>
+      <div class="fg"><div class="toggle-row"><button class="toggle ${ann?.is_marquee?'on':''}" id="an-marquee" onclick="this.classList.toggle('on')"></button><span>Show in Marquee Banner</span></div></div>
+    </div>`;
+  document.getElementById('modalFoot').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveAnn('${id||''}')">Save</button>`;
+  openModal();
+}
+
+async function saveAnn(id) {
+  const body = { title:document.getElementById('an-title').value, message:document.getElementById('an-msg').value, type:document.getElementById('an-type').value, target_role:document.getElementById('an-role').value, starts_at:document.getElementById('an-start').value||null, ends_at:document.getElementById('an-end').value||null, is_active:document.getElementById('an-active').classList.contains('on')?1:0, is_marquee:document.getElementById('an-marquee').classList.contains('on')?1:0 };
+  if (!body.title||!body.message) { showToast('Title and message required','error'); return; }
+  const res = id ? await api(`/admin/services/announcements/${id}`,{method:'PUT',body}) : await api('/admin/services/announcements',{method:'POST',body});
+  if (res?.ok||res?.data?.offline) { showToast(id?'Updated':'Created','success'); closeModal(); loadAnnouncements(); }
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+async function toggleAnn(id, current) {
+  const res = await api(`/admin/services/announcements/${id}`,{method:'PUT',body:{is_active:current?0:1}});
+  if (res?.ok||res?.data?.offline) { const a=allAnnouncements.find(a=>a.id===id); if(a) a.is_active=current?0:1; renderAnnouncements(); }
+}
+
+async function deleteAnn(id) {
+  if(!confirm('Delete this announcement?')) return;
+  const res = await api(`/admin/services/announcements/${id}`,{method:'DELETE'});
+  if (res?.ok||res?.data?.offline) { allAnnouncements=allAnnouncements.filter(a=>a.id!==id); renderAnnouncements(); showToast('Deleted','success'); }
+}
+
+// ─── SETTINGS ─────────────────────────────────────────
+async function loadSettings() {
+  const res = await api('/admin/services/settings/all');
+  const settings = res?.ok ? (res.data.data||[]) : DEMO_SETTINGS;
+  const grouped = {};
+  settings.forEach(s => { if(!grouped[s.group_name]) grouped[s.group_name]=[]; grouped[s.group_name].push(s); allSettings[s.key]=s.value; });
+
+  const groupIcons = { general:'🏛️', features:'⚡', fees:'💰', notifications:'🔔', uploads:'📁', maintenance:'🔧' };
+  document.getElementById('settingsContent').innerHTML = Object.entries(grouped).map(([group, items]) => `
+    <div class="settings-group">
+      <div class="settings-group-title">${groupIcons[group]||'⚙️'} ${group.charAt(0).toUpperCase()+group.slice(1)}</div>
+      ${items.map(s => `
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">${s.label}</div>
+            <div class="setting-key">${s.key}</div>
+            ${s.description?`<div class="setting-hint">${s.description}</div>`:''}
+          </div>
+          <div>
+            ${s.type === 'boolean'
+              ? `<button class="toggle ${s.value==='true'?'on':''}" id="setting-${s.key}" onclick="toggleSetting(this,'${s.key}')"></button>`
+              : `<input class="setting-input" id="setting-${s.key}" value="${s.value||''}" type="${s.type==='number'?'number':'text'}" placeholder="${s.label}">`}
+          </div>
+          <div>
+            <button class="btn btn-green btn-sm" onclick="saveSingleSetting('${s.key}')">Save</button>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function toggleSetting(btn, key) { btn.classList.toggle('on'); }
+
+async function saveSingleSetting(key) {
+  const el = document.getElementById(`setting-${key}`);
+  const value = el.tagName === 'BUTTON' ? (el.classList.contains('on') ? 'true' : 'false') : el.value;
+  const res = await api(`/admin/services/settings/${key}`, { method:'PUT', body: { value } });
+  if (res?.ok||res?.data?.offline) showToast(`Setting '${key}' saved`, 'success');
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+async function saveAllSettings() {
+  const settings = {};
+  document.querySelectorAll('[id^="setting-"]').forEach(el => {
+    const key = el.id.replace('setting-','');
+    settings[key] = el.tagName === 'BUTTON' ? (el.classList.contains('on')?'true':'false') : el.value;
+  });
+  const res = await api('/admin/services/settings/bulk', { method:'PUT', body: { settings } });
+  if (res?.ok||res?.data?.offline) showToast(`All settings saved`, 'success');
+  else showToast(res?.data?.message||'Failed','error');
+}
+
+// ─── AUDIT LOG ────────────────────────────────────────
+async function loadAudit() {
+  const res = await api('/admin/audit-log?limit=50');
+  const logs = res?.ok ? (res.data.data||[]) : [];
+  const actionColors = {LOGIN:'var(--green)',LOGOUT:'var(--muted)',CREATE_SERVICE:'var(--blue)',UPDATE_SERVICE:'var(--brand2)',DELETE_SERVICE:'var(--red)',UPDATE_SETTING:'var(--purple)'};
+  document.getElementById('auditContent').innerHTML = logs.length ? `
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Entity</th><th>IP</th></tr></thead>
+      <tbody>${logs.map(l => `<tr>
+        <td style="font-size:11px;color:var(--muted);white-space:nowrap">${new Date(l.created_at).toLocaleString('en-IN')}</td>
+        <td><div style="font-size:12px;font-weight:600">${l.user_name||'System'}</div></td>
+        <td><span style="font-family:monospace;font-size:11px;padding:2px 7px;border-radius:5px;background:#f0f2f7;color:${actionColors[l.action]||'var(--tx)'};font-weight:700">${l.action}</span></td>
+        <td style="font-size:12px">${l.entity||'–'} ${l.entity_id?`<span style="font-size:10px;color:var(--muted)">${l.entity_id.slice(0,8)}…</span>`:''}</td>
+        <td style="font-size:11px;color:var(--muted)">${l.ip_address||'–'}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>` : '<div class="empty"><span class="ei">🔍</span><h3>No audit logs yet</h3></div>';
+}
+
+// ─── MODAL ────────────────────────────────────────────
+function openModal() { document.getElementById('modalBg').classList.add('open'); }
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+document.getElementById('modalBg').addEventListener('click', e => { if(e.target===document.getElementById('modalBg')) closeModal(); });
+
+function switchModalTab(btn, paneId) {
+  btn.closest('.modal-body').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.closest('.modal-body').querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById(paneId)?.classList.add('active');
+}
+
+// ─── TOAST ────────────────────────────────────────────
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = (type==='success'?'✓ ':type==='error'?'✕ ':'ℹ ')+msg;
+  t.className = `toast ${type} show`;
+  clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ─── HELPERS ──────────────────────────────────────────
+function populateCategoryFilters() {
+  const sel = document.getElementById('svc-cat-filter');
+  while(sel.options.length>1) sel.remove(1);
+  allCategories.forEach(c => sel.add(new Option(`${c.icon} ${c.name}`, c.id)));
+}
+function populateServiceDropdowns() {
+  ['fb-service-sel','doc-service-sel'].forEach(id => {
+    const sel = document.getElementById(id);
+    while(sel.options.length>1) sel.remove(1);
+    allServices.forEach(s => sel.add(new Option(`${s.icon||'📋'} ${s.name}`, s.id)));
+  });
+}
+
+// ─── DEMO DATA ────────────────────────────────────────
+const DEMO_DASH = { users:{total:3,retailers:1}, apps:{total:12,pending:3,approved:7,completed:5,today:2}, revenue:{total:8450,today:590,month:3200}, service_breakdown:DEMO_SERVICES.map(s=>({service_name:s.name,count:s.total_applications,revenue:s.total_fee*s.total_applications})), recent_applications:DEMO_APPS_ADMIN };
+const DEMO_ANNOUNCEMENTS = [{id:'ann1',title:'PVC Aadhaar Card Available',message:'Order PVC card delivered in 7 days.',type:'info',target_role:'all',is_active:1,is_marquee:1,created_at:new Date().toISOString(),created_by_name:'Admin'}];
+const DEMO_SETTINGS = [{key:'portal_name',value:'JanaSeva',type:'string',label:'Portal Name',description:'Display name',group_name:'general',is_public:1},{key:'support_phone',value:'7760449027',type:'string',label:'Support Phone',description:'Customer care',group_name:'general',is_public:1},{key:'enable_wallet_payment',value:'true',type:'boolean',label:'Enable Wallet Payment',description:'Allow wallet pay',group_name:'features',is_public:1},{key:'maintenance_mode',value:'false',type:'boolean',label:'Maintenance Mode',description:'Show maintenance screen',group_name:'maintenance',is_public:1}];
+
+// ─── BOOT ─────────────────────────────────────────────
+if (token && adminUser?.role === 'admin') { initApp(); }
+else if (adminUser) { initApp(); } // demo mode
+</script>
+</body>
+</html>
